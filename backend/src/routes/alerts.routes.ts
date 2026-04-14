@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { getAlerts, markRead, markAllRead, dismissAlert } from '../controllers/alerts/alerts.controller';
+import { authenticate } from '../middleware/authenticate';
+const router = Router();
+router.use(authenticate);
+router.get('/', getAlerts);
+router.patch('/:id/read', markRead);
+router.patch('/read-all', markAllRead);
+router.delete('/:id', dismissAlert);
+export default router;

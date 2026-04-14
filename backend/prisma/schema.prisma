@@ -1,0 +1,372 @@
+// ============================================
+// SAVVY UK — PRISMA DATABASE SCHEMA
+// Database: Neon PostgreSQL
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Plan {
+  FREE
+  PRO
+  PREMIUM
+}
+
+enum BillType {
+  ENERGY
+  BROADBAND
+  MOBILE
+  WATER
+  COUNCIL_TAX
+  TV_LICENCE
+  OTHER
+}
+
+enum AlertType {
+  BENEFIT_FOUND
+  ENERGY_SAVING
+  BROADBAND_SAVING
+  PRICE_CAP_CHANGE
+  BENEFIT_DEADLINE
+  MONTHLY_SCAN
+}
+
+enum AlertStatus {
+  UNREAD
+  READ
+  DISMISSED
+  ACTED_ON
+}
+
+enum AffiliateType {
+  ENERGY_SWITCH
+  BROADBAND_SWITCH
+  INSURANCE_REFERRAL
+  MORTGAGE_REFERRAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
+}
+
+// ============================================
+// USER
+// ============================================
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String
+  name              String?
+  postcode          String?
+  householdSize     Int      @default(1)
+  plan              Plan     @default(FREE)
+  emailVerified     Boolean  @default(false)
+  googleId          String?  @unique
+  avatarUrl         String?
+  onboardingDone    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  refreshTokens     RefreshToken[]
+  userProfile       UserProfile?
+  benefitsChecks    BenefitsCheck[]
+  bills             Bill[]
+  energyScans       EnergyScan[]
+  alerts            Alert[]
+  savings           SavingsRecord[]
+  affiliateClicks   AffiliateClick[]
+  subscription      Subscription?
+  monthlyScanLog    MonthlyScan[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ============================================
+// USER PROFILE — Benefits eligibility data
+// ============================================
+
+model UserProfile {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  
+  // Household
+  hasChildren             Boolean  @default(false)
+  childrenCount           Int      @default(0)
+  hasDisabledMember       Boolean  @default(false)
+  hasCarerInHousehold     Boolean  @default(false)
+  isPensioner             Boolean  @default(false)
+  
+  // Employment
+  isEmployed              Boolean  @default(false)
+  isUnemployed            Boolean  @default(false)
+  isSelfEmployed          Boolean  @default(false)
+  
+  // Income
+  annualIncome            Float?
+  
+  // Current Benefits (what they already claim)
+  claimsUniversalCredit   Boolean  @default(false)
+  claimsPensionCredit     Boolean  @default(false)
+  claimsESA               Boolean  @default(false)
+  claimsJSA               Boolean  @default(false)
+  claimsPIP               Boolean  @default(false)
+  claimsCarersAllowance   Boolean  @default(false)
+  claimsHousingBenefit    Boolean  @default(false)
+  claimsChildBenefit      Boolean  @default(false)
+  claimsCouncilTaxReduction Boolean @default(false)
+  
+  // Housing
+  homeOwner               Boolean  @default(false)
+  privateTenant           Boolean  @default(false)
+  socialHousingTenant     Boolean  @default(false)
+  
+  // Energy
+  currentEnergySupplier   String?
+  onPrepayMeter           Boolean  @default(false)
+  hasSmartMeter           Boolean  @default(false)
+  
+  updatedAt               DateTime @updatedAt
+  
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// ============================================
+// BENEFITS
+// ============================================
+
+model BenefitsCheck {
+  id                  String   @id @default(cuid())
+  userId              String
+  
+  // Results
+  totalPotentialValue Float    @default(0) // £ per year
+  benefitsFound       Json     // Array of BenefitResult objects
+  benefitsAlreadyClaiming Json @default("[]")
+  
+  // AI Analysis
+  aiSummary           String?
+  confidenceScore     Float    @default(0)
+  
+  createdAt           DateTime @default(now())
+  
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("benefits_checks")
+}
+
+// ============================================
+// BILLS
+// ============================================
+
+model Bill {
+  id              String   @id @default(cuid())
+  userId          String
+  type            BillType
+  supplier        String?
+  
+  // Amounts
+  annualCost      Float?
+  monthlyAmount   Float?
+  
+  // AI extracted data
+  extractedData   Json?    // Raw AI extracted fields
+  aiAnalysis      String?  // AI savings narrative
+  potentialSaving Float?   // £ annual saving found
+  
+  // File
+  fileUrl         String?
+  fileName        String?
+  
+  uploadedAt      DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@map("bills")
+}
+
+// ============================================
+// ENERGY SCANS
+// ============================================
+
+model EnergyScan {
+  id                  String   @id @default(cuid())
+  userId              String
+  
+  currentSupplier     String?
+  currentTariff       String?
+  annualUsageKwh      Float?
+  currentAnnualCost   Float?
+  
+  // Best deal found
+  bestDealSupplier    String?
+  bestDealAnnualCost  Float?
+  potentialSaving     Float?
+  
+  // Affiliate
+  affiliateUrl        String?
+  affiliateProvider   String?
+  
+  // Warm Home Discount eligibility
+  warmHomeDiscount    Boolean  @default(false)
+  warmHomeDiscountVal Float?
+  
+  aiRecommendation    String?
+  
+  scannedAt           DateTime @default(now())
+  
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("energy_scans")
+}
+
+// ============================================
+// ALERTS
+// ============================================
+
+model Alert {
+  id          String      @id @default(cuid())
+  userId      String
+  type        AlertType
+  status      AlertStatus @default(UNREAD)
+  title       String
+  message     String
+  actionUrl   String?
+  actionLabel String?
+  valueAmount Float?      // £ value of this alert
+  
+  createdAt   DateTime    @default(now())
+  readAt      DateTime?
+  
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("alerts")
+}
+
+// ============================================
+// SAVINGS TRACKER
+// ============================================
+
+model SavingsRecord {
+  id            String   @id @default(cuid())
+  userId        String
+  category      String   // "benefits", "energy", "broadband", "insurance"
+  description   String
+  annualSaving  Float
+  claimed       Boolean  @default(false)
+  claimedAt     DateTime?
+  
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("savings_records")
+}
+
+// ============================================
+// SUBSCRIPTIONS — Dodo Payments
+// ============================================
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  
+  // Dodo Payments data
+  dodoCustomerId      String?
+  dodoSubscriptionId  String?            @unique
+  
+  plan                Plan
+  status              SubscriptionStatus @default(ACTIVE)
+  priceGbp            Float
+  
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelledAt         DateTime?
+  
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ============================================
+// AFFILIATE TRACKING
+// ============================================
+
+model AffiliateClick {
+  id            String        @id @default(cuid())
+  userId        String?
+  type          AffiliateType
+  partner       String        // "energy_shop", "uswitch", "gocompare" etc
+  
+  // Tracking
+  sessionId     String?
+  converted     Boolean       @default(false)
+  commissionGbp Float?
+  
+  clickedAt     DateTime      @default(now())
+  convertedAt   DateTime?
+  
+  user          User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([type, converted])
+  @@map("affiliate_clicks")
+}
+
+// ============================================
+// MONTHLY SCAN LOG — Cron job tracking
+// ============================================
+
+model MonthlyScan {
+  id              String   @id @default(cuid())
+  userId          String
+  benefitsValue   Float    @default(0)
+  energySaving    Float    @default(0)
+  newAlertsCount  Int      @default(0)
+  scannedAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("monthly_scans")
+}
