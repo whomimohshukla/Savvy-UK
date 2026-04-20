@@ -50,19 +50,19 @@ export default function BenefitsPage() {
   if (step === 'loading') return (
     <div className="flex flex-col items-center justify-center py-24 gap-6">
       <div className="relative">
-        <div className="h-20 w-20 rounded-full border-4 border-green-100" />
+        <div className="h-20 w-20 rounded-full border-4 border-emerald-100" />
         <div className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center">
-          <Loader2 className="h-9 w-9 animate-spin text-green-600" />
+          <Loader2 className="h-9 w-9 animate-spin text-emerald-600" />
         </div>
       </div>
       <div className="text-center">
-        <p className="text-lg font-semibold text-gray-900">Checking your entitlements…</p>
-        <p className="text-sm text-gray-400 mt-1">Scanning 40+ UK benefits and support schemes</p>
+        <p className="text-lg font-semibold text-slate-900">Checking your entitlements…</p>
+        <p className="text-sm text-slate-400 mt-1">Scanning 40+ UK benefits and support schemes</p>
       </div>
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
         {['Checking Universal Credit eligibility…', 'Reviewing energy social tariffs…', 'Scanning housing benefits…'].map((msg, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs text-gray-400">
-            <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} />
+          <div key={i} className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} />
             {msg}
           </div>
         ))}
@@ -79,8 +79,8 @@ export default function BenefitsPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Benefits Check</h2>
-        <p className="text-gray-500 text-sm mt-1">
+        <h2 className="text-2xl font-bold text-slate-900">Benefits Check</h2>
+        <p className="text-slate-500 text-sm mt-1">
           Answer these questions and our AI will find every benefit you're entitled to but not claiming.
         </p>
       </div>
@@ -101,10 +101,10 @@ export default function BenefitsPage() {
           <Checkbox id="hasChildren" label="I have dependent children" {...register('hasChildren')} />
           {hasChildren && (
             <div className="ml-7 flex items-center gap-3">
-              <span className="text-sm text-gray-600">How many children?</span>
+              <span className="text-sm text-slate-600">How many children?</span>
               <input
                 type="number" min={1} max={10}
-                className="w-16 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-center focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                className="w-16 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-center focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
                 {...register('childrenCount', { valueAsNumber: true })}
               />
             </div>
@@ -120,7 +120,7 @@ export default function BenefitsPage() {
           <div>
             <label className="form-label">Approximate annual household income</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">£</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">£</span>
               <input
                 type="number"
                 className="form-input pl-8"
@@ -132,7 +132,7 @@ export default function BenefitsPage() {
         </FormSection>
 
         <FormSection emoji="✅" title="Benefits you currently receive">
-          <p className="text-xs text-gray-400 mb-1">Tick what you already claim — we'll find what you're missing</p>
+          <p className="text-xs text-slate-400 mb-1">Tick what you already claim — we'll find what you're missing</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {CURRENT_BENEFITS.map(b => (
               <Checkbox key={b.id} id={b.id} label={b.label} {...register(b.id as any)} />
@@ -149,7 +149,7 @@ export default function BenefitsPage() {
         <FormSection emoji="⚡" title="Energy">
           <Checkbox id="onPrepayMeter" label="I'm on a prepayment (pay-as-you-go) meter" {...register('onPrepayMeter')} />
           <div>
-            <label className="form-label">Current energy supplier <span className="text-gray-400 font-normal">(optional)</span></label>
+            <label className="form-label">Current energy supplier <span className="text-slate-400 font-normal">(optional)</span></label>
             <input
               type="text"
               className="form-input"
@@ -163,7 +163,7 @@ export default function BenefitsPage() {
           Check my entitlements
           <ChevronRight className="h-5 w-5" />
         </Button>
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-slate-400">
           We never store sensitive personal data. Results are for guidance only and not regulated financial advice.
         </p>
       </form>
@@ -176,7 +176,7 @@ function FormSection({ emoji, title, children }: { emoji: string; title: string;
     <div className="card p-5">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-xl">{emoji}</span>
-        <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+        <h3 className="text-base font-semibold text-slate-900">{title}</h3>
       </div>
       <div className="space-y-3">{children}</div>
     </div>
@@ -217,16 +217,16 @@ function BenefitsResults({ results, onReset }: { results: any; onReset: () => vo
       {benefits.length === 0 ? (
         <div className="card p-10 text-center">
           <CheckCircle2 className="h-12 w-12 text-green-400 mx-auto mb-3" />
-          <h3 className="font-semibold text-gray-900">Great news — you appear to be claiming everything</h3>
-          <p className="text-sm text-gray-400 mt-1">Check again if your circumstances change</p>
+          <h3 className="font-semibold text-slate-900">Great news — you appear to be claiming everything</h3>
+          <p className="text-sm text-slate-400 mt-1">Check again if your circumstances change</p>
         </div>
       ) : (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-semibold text-gray-900">
+            <h3 className="text-base font-semibold text-slate-900">
               {benefits.length} benefit{benefits.length !== 1 ? 's' : ''} found
             </h3>
-            <span className="text-xs text-gray-400">Click any card for claim steps</span>
+            <span className="text-xs text-slate-400">Click any card for claim steps</span>
           </div>
           <div className="space-y-3">
             {benefits.map((b, i) => <BenefitCard key={i} benefit={b} />)}

@@ -49,11 +49,11 @@ export default function EnergyPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <Zap className="h-6 w-6 text-amber-500" />
           Energy Comparison
         </h2>
-        <p className="text-gray-500 text-sm mt-1">Find the cheapest energy deal for your home in under a minute</p>
+        <p className="text-slate-500 text-sm mt-1">Find the cheapest energy deal for your home in under a minute</p>
       </div>
 
       {/* Price cap info */}
@@ -80,7 +80,7 @@ export default function EnergyPage() {
                 <input className="form-input" placeholder="e.g. Standard Variable" {...register('currentTariff')} />
               </div>
               <div>
-                <label className="form-label">Annual usage (kWh) <span className="text-xs text-gray-400">optional</span></label>
+                <label className="form-label">Annual usage (kWh) <span className="text-xs text-slate-400">optional</span></label>
                 <input type="number" className="form-input" placeholder="~3100 for average home" {...register('annualUsageKwh', { valueAsNumber: true })} />
               </div>
               <div>
@@ -142,8 +142,8 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
                 <span className="text-sm">🤖</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">AI Recommendation</p>
-                <p className="text-sm text-gray-600 leading-relaxed">{res.recommendation}</p>
+                <p className="text-sm font-semibold text-slate-900 mb-1">AI Recommendation</p>
+                <p className="text-sm text-slate-600 leading-relaxed">{res.recommendation}</p>
               </div>
             </div>
           </CardBody>
@@ -181,7 +181,7 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
                 onSwitch={() => onSwitch(res.affiliateProvider || 'energy_shop')}
               />
             ))}
-            <p className="text-xs text-gray-400 text-center pt-2">
+            <p className="text-xs text-slate-400 text-center pt-2">
               We may earn a commission if you switch — you pay nothing extra.
             </p>
           </CardBody>

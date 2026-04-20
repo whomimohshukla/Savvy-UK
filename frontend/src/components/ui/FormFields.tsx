@@ -19,7 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     {label && <label className="form-label">{label}</label>}
     <div className="relative">
       {prefix && (
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-400 select-none">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 select-none font-medium">
           {prefix}
         </span>
       )}
@@ -29,23 +29,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           'form-input',
           prefix && 'pl-8',
           suffix && 'pr-10',
-          error && 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20',
+          error && 'border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-400/20',
           className,
         )}
         {...props}
       />
       {suffix && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
           {suffix}
         </span>
       )}
     </div>
     {error && (
       <p className="form-error flex items-center gap-1 mt-1.5">
-        <AlertCircle className="h-3.5 w-3.5" />{error}
+        <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />{error}
       </p>
     )}
-    {hint && !error && <p className="mt-1 text-xs text-gray-400">{hint}</p>}
+    {hint && !error && <p className="mt-1.5 text-xs text-slate-400">{hint}</p>}
   </div>
 ));
 Input.displayName = 'Input';
@@ -64,13 +64,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
     <textarea
       ref={ref}
       className={cn(
-        'form-input resize-none',
-        error && 'border-red-300 bg-red-50 focus:border-red-500',
+        'form-input resize-none min-h-[100px]',
+        error && 'border-red-300 bg-red-50 focus:border-red-400',
         className,
       )}
       {...props}
     />
-    {error && <p className="form-error mt-1">{error}</p>}
+    {error && <p className="form-error mt-1.5">{error}</p>}
   </div>
 ));
 Textarea.displayName = 'Textarea';
@@ -97,12 +97,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
       )}
       {...props}
     >
-      {placeholder && <option value="">{placeholder}</option>}
+      {placeholder && <option value="" disabled>{placeholder}</option>}
       {options.map(o => (
         <option key={o.value} value={o.value}>{o.label}</option>
       ))}
     </select>
-    {error && <p className="form-error mt-1">{error}</p>}
+    {error && <p className="form-error mt-1.5">{error}</p>}
   </div>
 ));
 Select.displayName = 'Select';
@@ -122,14 +122,14 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
       id={id}
       type="checkbox"
       className={cn(
-        'mt-0.5 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer',
+        'mt-0.5 h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 cursor-pointer accent-emerald-500',
         className,
       )}
       {...props}
     />
     <div>
-      <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-none">{label}</span>
-      {description && <p className="text-xs text-gray-400 mt-0.5">{description}</p>}
+      <span className="text-sm text-slate-700 group-hover:text-slate-900 leading-none font-medium">{label}</span>
+      {description && <p className="text-xs text-slate-400 mt-0.5">{description}</p>}
     </div>
   </label>
 ));

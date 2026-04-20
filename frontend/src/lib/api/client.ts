@@ -92,7 +92,7 @@ async function request<T>(method: Method, path: string, options: ApiOptions = {}
       // Refresh failed — clear auth and redirect
       if (typeof window !== 'undefined') {
         localStorage.removeItem('savvy-auth');
-        window.location.href = '/auth/login';
+        window.location.href = '/auth';
       }
       throw new ApiError(401, 'Session expired. Please log in again.');
     }
@@ -136,18 +136,23 @@ export const dashboardApi = {
 };
 
 export const benefitsApi = {
-  check: (profile: Record<string, unknown>) => api.post('/api/v1/benefits/check', profile),
+  check: (profile: unknown) => api.post('/api/v1/benefits/check', profile),
   getLatest: () => api.get('/api/v1/benefits/latest'),
   getHistory: () => api.get('/api/v1/benefits/history'),
 };
 
 export const billsApi = {
-  upload: (formData: FormData) => {
-    return fetch(`${API_BASE}/api/v1/bills/upload`, {
+  upload: async (formData: FormData) => {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('savvy-auth') : null;
+    const token = raw ? JSON.parse(raw).state?.accessToken ?? '' : '';
+    const res = await fetch(`${API_BASE}/api/v1/bills/upload`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${localStorage.getItem('savvy-auth') ? JSON.parse(localStorage.getItem('savvy-auth')!).state.accessToken : ''}` },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
-    }).then(r => r.json());
+    });
+    const data = await res.json();
+    if (!res.ok) throw new ApiError(res.status, data?.error || 'Upload failed');
+    return data;
   },
   getBills: (type?: string) => api.get(`/api/v1/bills${type ? `?type=${type}` : ''}`),
   getBill: (id: string) => api.get(`/api/v1/bills/${id}`),

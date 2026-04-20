@@ -55,11 +55,11 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <Settings className="h-6 w-6 text-gray-500" />
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <Settings className="h-6 w-6 text-slate-500" />
           Settings
         </h2>
-        <p className="text-gray-500 text-sm mt-0.5">Manage your account and subscription</p>
+        <p className="text-slate-500 text-sm mt-0.5">Manage your account and subscription</p>
       </div>
 
       {/* Account details */}
@@ -74,10 +74,10 @@ export default function SettingsPage() {
           ].map((row, i, arr) => (
             <div
               key={row.label}
-              className={`flex items-center justify-between px-6 py-4 ${i < arr.length - 1 ? 'border-b border-gray-50' : ''}`}
+              className={`flex items-center justify-between px-6 py-4 ${i < arr.length - 1 ? 'border-b border-slate-50' : ''}`}
             >
-              <span className="text-sm text-gray-500">{row.label}</span>
-              <span className="text-sm font-medium text-gray-900">{row.value}</span>
+              <span className="text-sm text-slate-500">{row.label}</span>
+              <span className="text-sm font-medium text-slate-900">{row.value}</span>
             </div>
           ))}
         </CardBody>
@@ -109,37 +109,37 @@ export default function SettingsPage() {
                   key={plan.id}
                   className={`relative rounded-xl border p-4 transition-all ${
                     isActive
-                      ? 'border-green-300 bg-green-50/50'
+                      ? 'border-emerald-300 bg-emerald-50/50'
                       : plan.popular
-                        ? 'border-gray-200 hover:border-green-200'
-                        : 'border-gray-100 hover:border-gray-200'
+                        ? 'border-slate-200 hover:border-emerald-200'
+                        : 'border-slate-100 hover:border-slate-200'
                   }`}
                 >
                   {plan.popular && !isActive && (
-                    <div className="absolute -top-2.5 left-4 rounded-full bg-green-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                    <div className="absolute -top-2.5 left-4 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                       Most popular
                     </div>
                   )}
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-gray-900">{plan.name}</span>
+                        <span className="font-semibold text-slate-900">{plan.name}</span>
                         {isActive && (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600">
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
                             <CheckCircle2 className="h-3 w-3" />Current plan
                           </span>
                         )}
                       </div>
                       <div className="flex items-baseline gap-1 mb-3">
-                        <span className="text-2xl font-extrabold text-gray-900">
+                        <span className="text-2xl font-extrabold text-slate-900">
                           {plan.price === 0 ? 'Free' : `£${plan.price}`}
                         </span>
-                        {plan.price > 0 && <span className="text-sm text-gray-400">/month</span>}
+                        {plan.price > 0 && <span className="text-sm text-slate-400">/month</span>}
                       </div>
                       <ul className="space-y-1">
                         {plan.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-xs text-gray-500">
-                            <CheckCircle2 className="h-3 w-3 flex-shrink-0 text-green-500" />
+                          <li key={f} className="flex items-center gap-2 text-xs text-slate-500">
+                            <CheckCircle2 className="h-3 w-3 flex-shrink-0 text-emerald-500" />
                             {f}
                           </li>
                         ))}
@@ -147,8 +147,8 @@ export default function SettingsPage() {
                     </div>
                     <div className="ml-4 flex-shrink-0">
                       {isActive ? (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                         </div>
                       ) : currentPlan === 'FREE' && plan.id !== 'FREE' ? (
                         <Button
@@ -169,23 +169,23 @@ export default function SettingsPage() {
 
           {/* Current subscription details */}
           {sub?.subscription && currentPlan !== 'FREE' && (
-            <div className="mt-2 rounded-xl bg-gray-50 border border-gray-100 p-4 space-y-1.5 text-sm">
+            <div className="mt-2 rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Status</span>
-                <span className="font-medium capitalize text-gray-900">{sub.subscription.status?.toLowerCase()}</span>
+                <span className="text-slate-500">Status</span>
+                <span className="font-medium capitalize text-slate-900">{sub.subscription.status?.toLowerCase()}</span>
               </div>
               {sub.subscription.currentPeriodEnd && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Next billing</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-slate-500">Next billing</span>
+                  <span className="font-medium text-slate-900">
                     {new Date(sub.subscription.currentPeriodEnd).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
               )}
               {sub.subscription.priceGbp && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Amount</span>
-                  <span className="font-medium text-gray-900">£{sub.subscription.priceGbp}/month</span>
+                  <span className="text-slate-500">Amount</span>
+                  <span className="font-medium text-slate-900">£{sub.subscription.priceGbp}/month</span>
                 </div>
               )}
             </div>
@@ -197,20 +197,20 @@ export default function SettingsPage() {
       <Card>
         <CardHeader
           title="Security"
-          action={<Shield className="h-4 w-4 text-gray-400" />}
+          action={<Shield className="h-4 w-4 text-slate-400" />}
         />
         <CardBody className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-900">Password</p>
-              <p className="text-xs text-gray-400">Change your account password</p>
+              <p className="text-sm font-medium text-slate-900">Password</p>
+              <p className="text-xs text-slate-400">Change your account password</p>
             </div>
             <Button variant="outline" size="sm">Change password</Button>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-900">Email verified</p>
-              <p className="text-xs text-gray-400">{user?.email}</p>
+              <p className="text-sm font-medium text-slate-900">Email verified</p>
+              <p className="text-xs text-slate-400">{user?.email}</p>
             </div>
             <span className="badge-green">
               <CheckCircle2 className="h-3 w-3" />Verified
@@ -234,16 +234,16 @@ export default function SettingsPage() {
               href={link.href}
               target={link.external ? '_blank' : undefined}
               rel={link.external ? 'noopener noreferrer' : undefined}
-              className="flex items-center justify-between px-6 py-3.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-6 py-3.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
             >
               {link.label}
-              <ExternalLink className="h-3.5 w-3.5 text-gray-300" />
+              <ExternalLink className="h-3.5 w-3.5 text-slate-300" />
             </a>
           ))}
         </CardBody>
       </Card>
 
-      <p className="text-xs text-gray-400 text-center pb-4">
+      <p className="text-xs text-slate-400 text-center pb-4">
         Savvy UK provides informational guidance only — not regulated financial advice.
         We do not store uploaded bill files. Registered with the ICO.
       </p>

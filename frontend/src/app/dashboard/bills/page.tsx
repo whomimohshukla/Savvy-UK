@@ -69,11 +69,11 @@ export default function BillsPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <FileText className="h-6 w-6 text-blue-500" />
           My Bills
         </h2>
-        <p className="text-gray-500 text-sm mt-1">Upload any bill as PDF — AI will extract details and find cheaper alternatives</p>
+        <p className="text-slate-500 text-sm mt-1">Upload any bill as PDF — AI will extract details and find cheaper alternatives</p>
       </div>
 
       {/* Upload card */}
@@ -92,8 +92,8 @@ export default function BillsPage() {
                   className={cn(
                     'flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition-all',
                     selectedType === t.value
-                      ? 'bg-green-600 text-white shadow-sm'
-                      : 'border border-gray-200 bg-white text-gray-600 hover:border-green-300 hover:bg-green-50',
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50',
                   )}
                 >
                   <span>{t.emoji}</span>{t.label}
@@ -106,23 +106,23 @@ export default function BillsPage() {
           <label className={cn(
             'flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 cursor-pointer transition-all',
             uploading
-              ? 'border-green-300 bg-green-50'
-              : 'border-gray-200 hover:border-green-400 hover:bg-green-50/30',
+              ? 'border-emerald-300 bg-emerald-50'
+              : 'border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/30',
           )}>
             <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={handleUpload} disabled={uploading} />
             {uploading ? (
               <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-                <p className="text-sm font-medium text-green-700">Analysing your bill with AI…</p>
-                <p className="text-xs text-green-500">This usually takes 15–30 seconds</p>
+                <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+                <p className="text-sm font-medium text-emerald-700">Analysing your bill with AI…</p>
+                <p className="text-xs text-emerald-500">This usually takes 15–30 seconds</p>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 mb-1">
-                  <Upload className="h-6 w-6 text-gray-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 mb-1">
+                  <Upload className="h-6 w-6 text-slate-400" />
                 </div>
                 <p className="text-sm font-medium text-gray-700">Click to upload your bill</p>
-                <p className="text-xs text-gray-400">PDF only · Max 10MB · We never store your files</p>
+                <p className="text-xs text-slate-400">PDF only · Max 10MB · We never store your files</p>
               </div>
             )}
           </label>
@@ -136,7 +136,7 @@ export default function BillsPage() {
       {loading ? <LoadingPage /> : (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-semibold text-gray-900">Your bills ({bills.length})</h3>
+            <h3 className="text-base font-semibold text-slate-900">Your bills ({bills.length})</h3>
           </div>
 
           {bills.length === 0 ? (
@@ -165,12 +165,12 @@ export default function BillsPage() {
                             {bill.type.replace('_', ' ')}
                           </Badge>
                           {bill.supplier && (
-                            <span className="text-sm font-semibold text-gray-900">{bill.supplier}</span>
+                            <span className="text-sm font-semibold text-slate-900">{bill.supplier}</span>
                           )}
                         </div>
-                        <div className="flex flex-wrap gap-3 text-xs text-gray-400">
-                          {bill.annualCost && <span>Annual: <span className="text-gray-600 font-medium">{formatCurrency(bill.annualCost)}</span></span>}
-                          {bill.monthlyAmount && <span>Monthly: <span className="text-gray-600 font-medium">{formatCurrency(bill.monthlyAmount)}</span></span>}
+                        <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+                          {bill.annualCost && <span>Annual: <span className="text-slate-600 font-medium">{formatCurrency(bill.annualCost)}</span></span>}
+                          {bill.monthlyAmount && <span>Monthly: <span className="text-slate-600 font-medium">{formatCurrency(bill.monthlyAmount)}</span></span>}
                           <span>Uploaded {formatDate(bill.uploadedAt)}</span>
                         </div>
                       </div>
@@ -178,22 +178,22 @@ export default function BillsPage() {
                       {/* Right: saving + actions */}
                       <div className="flex-shrink-0 flex items-start gap-2">
                         {bill.potentialSaving && bill.potentialSaving > 0 && (
-                          <div className="flex items-center gap-1 rounded-lg bg-green-50 px-2.5 py-1.5">
-                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
-                            <span className="text-xs font-bold text-green-700 tabular-nums">
+                          <div className="flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1.5">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                            <span className="text-xs font-bold text-emerald-700 tabular-nums">
                               Save {formatCurrency(bill.potentialSaving)}/yr
                             </span>
                           </div>
                         )}
                         <button
                           onClick={() => setExpandedId(expandedId === bill.id ? null : bill.id)}
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors"
                         >
                           <ChevronDown className={cn('h-4 w-4 transition-transform', expandedId === bill.id && 'rotate-180')} />
                         </button>
                         <button
                           onClick={() => handleDelete(bill.id)}
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -202,16 +202,16 @@ export default function BillsPage() {
 
                     {/* Expanded: AI analysis */}
                     {expandedId === bill.id && bill.aiAnalysis && (
-                      <div className="mt-4 pt-4 border-t border-gray-100 animate-fade-in">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">AI Analysis</p>
-                        <p className="text-sm text-gray-600 leading-relaxed">{bill.aiAnalysis}</p>
+                      <div className="mt-4 pt-4 border-t border-slate-100 animate-fade-in">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">AI Analysis</p>
+                        <p className="text-sm text-slate-600 leading-relaxed">{bill.aiAnalysis}</p>
                         {bill.extractedData?.recommendations?.length > 0 && (
                           <div className="mt-3">
-                            <p className="text-xs font-semibold text-gray-500 mb-1.5">Recommendations:</p>
+                            <p className="text-xs font-semibold text-slate-500 mb-1.5">Recommendations:</p>
                             <ul className="space-y-1">
                               {bill.extractedData.recommendations.map((r: string, i: number) => (
-                                <li key={i} className="flex items-start gap-2 text-xs text-gray-500">
-                                  <span className="text-green-500 mt-0.5">•</span>{r}
+                                <li key={i} className="flex items-start gap-2 text-xs text-slate-500">
+                                  <span className="text-emerald-500 mt-0.5">•</span>{r}
                                 </li>
                               ))}
                             </ul>

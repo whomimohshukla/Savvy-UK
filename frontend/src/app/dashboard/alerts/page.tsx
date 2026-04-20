@@ -59,7 +59,7 @@ export default function AlertsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Bell className="h-6 w-6 text-purple-500" />
             Alerts
             {unreadCount > 0 && (
@@ -68,7 +68,7 @@ export default function AlertsPage() {
               </span>
             )}
           </h2>
-          <p className="text-gray-500 text-sm mt-0.5">Personalised savings and benefit notifications</p>
+          <p className="text-slate-500 text-sm mt-0.5">Personalised savings and benefit notifications</p>
         </div>
         {unreadCount > 0 && (
           <Button variant="outline" size="sm" onClick={handleMarkAllRead}>
@@ -79,7 +79,7 @@ export default function AlertsPage() {
       </div>
 
       {/* Status filter tabs */}
-      <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1">
+      <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
         {STATUS_FILTERS.map((f) => (
           <button
             key={f.value}
@@ -87,8 +87,8 @@ export default function AlertsPage() {
             className={cn(
               'flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all',
               statusFilter === f.value
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700',
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-gray-700',
             )}
           >
             {f.label}
@@ -119,19 +119,19 @@ export default function AlertsPage() {
                 key={alert.id}
                 className={cn(
                   'group relative rounded-2xl border bg-white p-5 transition-all',
-                  isUnread ? 'border-green-100 shadow-sm' : 'border-gray-100 opacity-75 hover:opacity-100',
+                  isUnread ? 'border-emerald-100 shadow-sm' : 'border-slate-100 opacity-75 hover:opacity-100',
                 )}
               >
                 <div className="flex items-start gap-4">
                   {/* Emoji + unread dot */}
                   <div className="relative flex-shrink-0">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-xl">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-xl">
                       {typeConfig.emoji}
                     </div>
                     {isUnread && (
                       <span className="absolute -right-1 -top-1 flex h-3 w-3">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-50" />
-                        <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500" />
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
                       </span>
                     )}
                   </div>
@@ -141,21 +141,21 @@ export default function AlertsPage() {
                     <div className="flex flex-wrap items-center gap-2 mb-1.5">
                       <Badge variant={typeConfig.badgeVariant}>{typeConfig.label}</Badge>
                       {alert.valueAmount && (
-                        <span className="text-xs font-bold text-green-600 tabular-nums">
+                        <span className="text-xs font-bold text-emerald-600 tabular-nums">
                           {formatCurrency(alert.valueAmount)}
                         </span>
                       )}
-                      {isUnread && <span className="text-xs font-semibold text-green-600">New</span>}
+                      {isUnread && <span className="text-xs font-semibold text-emerald-600">New</span>}
                     </div>
-                    <p className="text-sm font-semibold text-gray-900 mb-0.5">{alert.title}</p>
-                    <p className="text-sm text-gray-500 leading-relaxed">{alert.message}</p>
-                    <p className="mt-2 text-xs text-gray-400">{formatDate(alert.createdAt)}</p>
+                    <p className="text-sm font-semibold text-slate-900 mb-0.5">{alert.title}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed">{alert.message}</p>
+                    <p className="mt-2 text-xs text-slate-400">{formatDate(alert.createdAt)}</p>
 
                     {/* Action link */}
                     {alert.actionUrl && (
                       <a
                         href={alert.actionUrl}
-                        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green-600 hover:text-green-700"
+                        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
                         onClick={() => handleMarkRead(alert.id)}
                       >
                         {alert.actionLabel || 'View details'}
@@ -171,7 +171,7 @@ export default function AlertsPage() {
                         onClick={() => handleMarkRead(alert.id)}
                         disabled={isLoading}
                         title="Mark as read"
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-green-50 hover:text-green-600 transition-colors disabled:opacity-40"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors disabled:opacity-40"
                       >
                         {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCheck className="h-3.5 w-3.5" />}
                       </button>
@@ -179,7 +179,7 @@ export default function AlertsPage() {
                     <button
                       onClick={() => handleDismiss(alert.id)}
                       title="Dismiss"
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>

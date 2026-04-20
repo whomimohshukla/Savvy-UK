@@ -8,9 +8,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       {/* ── Desktop Sidebar ── */}
-      <div className="hidden lg:flex lg:w-64 lg:flex-shrink-0 lg:flex-col border-r border-gray-100">
+      <div className="hidden lg:flex lg:w-[260px] lg:flex-shrink-0 lg:flex-col">
         <Sidebar />
       </div>
 
@@ -18,10 +18,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
-            className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-64 animate-slide-in shadow-2xl">
+          <div className="absolute left-0 top-0 h-full w-[260px] animate-slide-in shadow-2xl">
             <Sidebar onClose={() => setSidebarOpen(false)} mobile />
           </div>
         </div>

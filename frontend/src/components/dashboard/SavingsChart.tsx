@@ -7,20 +7,20 @@ interface SavingsChartProps {
 }
 
 const COLORS: Record<string, string> = {
-  benefits:  '#16a34a',
-  energy:    '#d97706',
-  broadband: '#2563eb',
-  insurance: '#7c3aed',
-  mobile:    '#db2777',
-  other:     '#6b7280',
+  benefits:  '#10B981',
+  energy:    '#F59E0B',
+  broadband: '#3B82F6',
+  insurance: '#7C3AED',
+  mobile:    '#EC4899',
+  other:     '#94A3B8',
 };
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload?.length) {
     return (
-      <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-lg text-sm">
-        <p className="font-semibold text-gray-900 capitalize">{payload[0].payload.category}</p>
-        <p className="text-green-600 font-bold">
+      <div className="rounded-xl border border-slate-100 bg-white p-3 shadow-card text-sm">
+        <p className="font-bold text-slate-900 capitalize mb-0.5">{payload[0].payload.category}</p>
+        <p className="text-emerald-600 font-black">
           £{Math.round(payload[0].value).toLocaleString()}/yr
         </p>
       </div>
