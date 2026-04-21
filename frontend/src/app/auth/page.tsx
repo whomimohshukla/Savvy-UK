@@ -42,15 +42,12 @@ export default function LoginPage() {
       {/* ── Left panel — branding ── */}
       <div
         className="hidden lg:flex lg:w-[46%] flex-col justify-between p-12 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(160deg, #030c18 0%, #051a1a 45%, #041524 75%, #030c18 100%)' }}
+        style={{ background: '#030c18' }}
       >
-        {/* Orbs */}
-        <div className="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-violet-500/15 blur-3xl" />
 
         {/* Logo */}
         <Link href="/" className="relative flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-glow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 shadow-glow-sm">
             <span className="text-base font-black">S</span>
           </div>
           <span className="text-xl font-bold tracking-tight">Savvy UK</span>
@@ -86,7 +83,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
                 <span className="text-sm font-black text-white">S</span>
               </div>
               <span className="text-lg font-bold text-slate-900">Savvy UK</span>
