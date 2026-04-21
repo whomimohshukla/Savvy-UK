@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { Loader2, ArrowLeft, CheckCircle2, Mail, ArrowRight } from 'lucide-react';
+import { authApi } from '@/lib/api/client';
 import { Alert } from '@/components/ui/index';
 
 export default function ForgotPasswordPage() {
@@ -12,25 +13,22 @@ export default function ForgotPasswordPage() {
 
   const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm<{ email: string }>();
 
-  const onSubmit = async (_data: { email: string }) => {
+  const onSubmit = async (data: { email: string }) => {
     setError('');
     try {
-      await new Promise(r => setTimeout(r, 1000));
+      await authApi.forgotPassword(data.email);
       setSent(true);
-    } catch {
-      setError('Failed to send reset email. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email. Please try again.');
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-5"
-      style={{ background: '#F8FAFC' }}
-    >
+    <div className="min-h-screen flex items-center justify-center p-5" style={{ background: '#F8FAFC' }}>
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="mb-8 flex items-center gap-2.5">
-          <Link href="/" className="flex items-center gap-2.5">
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-glow-sm">
               <span className="text-sm font-black text-white">S</span>
             </div>
@@ -39,29 +37,41 @@ export default function ForgotPasswordPage() {
         </div>
 
         {sent ? (
-          <div className="rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-card">
+          /* ── Success state ── */
+          <div className="rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-card animate-scale-in">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100">
               <CheckCircle2 className="h-8 w-8 text-emerald-600" />
             </div>
             <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Check your email</h2>
-            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-              We've sent a password reset link to{' '}
+            <p className="text-slate-500 text-sm mb-2 leading-relaxed">
+              We&apos;ve sent a password reset link to{' '}
               <strong className="text-slate-700">{getValues('email')}</strong>.
-              It will expire in 1 hour.
             </p>
-            <Link href="/auth" className="btn-primary w-full justify-center py-3">
-              Back to sign in <ArrowRight className="h-4 w-4" />
-            </Link>
+            <p className="text-slate-400 text-xs mb-8">
+              The link expires in 1 hour. Check your spam folder if you don&apos;t see it.
+            </p>
+            <div className="space-y-3">
+              <Link href="/auth" className="btn-primary w-full justify-center py-3">
+                Back to sign in <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button
+                onClick={() => { setSent(false); setError(''); }}
+                className="w-full text-sm text-slate-500 hover:text-slate-700 transition-colors py-2"
+              >
+                Didn&apos;t receive it? Send again
+              </button>
+            </div>
           </div>
         ) : (
+          /* ── Form state ── */
           <div className="rounded-3xl border border-slate-100 bg-white p-8 shadow-card">
             <div className="mb-6">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
                 <Mail className="h-6 w-6 text-emerald-600" />
               </div>
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">Reset your password</h1>
-              <p className="mt-2 text-sm text-slate-500">
-                Enter your email and we'll send you a reset link.
+              <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+                Enter your email and we&apos;ll send you a secure reset link.
               </p>
             </div>
 
@@ -75,7 +85,10 @@ export default function ForgotPasswordPage() {
                   autoComplete="email"
                   className={`form-input ${errors.email ? 'border-red-400' : ''}`}
                   placeholder="you@example.com"
-                  {...register('email', { required: 'Email is required' })}
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: { value: /\S+@\S+\.\S+/, message: 'Invalid email address' },
+                  })}
                 />
                 {errors.email && <p className="form-error">{errors.email.message}</p>}
               </div>

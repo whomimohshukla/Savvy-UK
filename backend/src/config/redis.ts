@@ -3,32 +3,45 @@ import { env } from './env';
 import { logger } from './logger';
 
 let redis: Redis | null = null;
+let redisAvailable = false;
 
-export function getRedis(): Redis {
-  if (!redis) {
-    throw new Error('Redis not connected. Call connectRedis() first.');
-  }
-  return redis;
+export function getRedis(): Redis | null {
+  return redisAvailable ? redis : null;
 }
 
 export async function connectRedis(): Promise<void> {
-  redis = new Redis(env.REDIS_URL, {
-    maxRetriesPerRequest: 3,
-    retryStrategy: (times) => {
-      if (times > 5) return null;
-      return Math.min(times * 200, 2000);
-    },
-    enableOfflineQueue: false,
-  });
+  return new Promise((resolve) => {
+    const client = new Redis(env.REDIS_URL, {
+      maxRetriesPerRequest: 1,
+      retryStrategy: (times) => {
+        if (times > 2) return null;
+        return Math.min(times * 200, 1000);
+      },
+      enableOfflineQueue: false,
+      connectTimeout: 5000,
+      lazyConnect: true,
+    });
 
-  return new Promise((resolve, reject) => {
-    redis!.on('connect', () => {
+    const timeout = setTimeout(() => {
+      logger.warn('⚠️  Redis unavailable — caching disabled (set REDIS_URL to enable)');
+      client.disconnect();
+      resolve();
+    }, 6000);
+
+    client.connect().then(() => {
+      clearTimeout(timeout);
+      redis = client;
+      redisAvailable = true;
       logger.info('Redis connected');
       resolve();
+    }).catch(() => {
+      clearTimeout(timeout);
+      logger.warn('⚠️  Redis unavailable — caching disabled (set REDIS_URL to enable)');
+      resolve();
     });
-    redis!.on('error', (err) => {
-      logger.error('Redis error:', err);
-      reject(err);
+
+    client.on('error', () => {
+      // Suppress repeated error logs once we know it's unavailable
     });
   });
 }
@@ -37,9 +50,10 @@ export async function connectRedis(): Promise<void> {
 
 export async function cacheGet<T>(key: string): Promise<T | null> {
   const r = getRedis();
-  const val = await r.get(key);
-  if (!val) return null;
+  if (!r) return null;
   try {
+    const val = await r.get(key);
+    if (!val) return null;
     return JSON.parse(val) as T;
   } catch {
     return null;
@@ -52,20 +66,27 @@ export async function cacheSet(
   ttlSeconds = 3600
 ): Promise<void> {
   const r = getRedis();
-  await r.setex(key, ttlSeconds, JSON.stringify(value));
+  if (!r) return;
+  try {
+    await r.setex(key, ttlSeconds, JSON.stringify(value));
+  } catch {}
 }
 
 export async function cacheDel(key: string): Promise<void> {
   const r = getRedis();
-  await r.del(key);
+  if (!r) return;
+  try {
+    await r.del(key);
+  } catch {}
 }
 
 export async function cacheDelPattern(pattern: string): Promise<void> {
   const r = getRedis();
-  const keys = await r.keys(pattern);
-  if (keys.length > 0) {
-    await r.del(...keys);
-  }
+  if (!r) return;
+  try {
+    const keys = await r.keys(pattern);
+    if (keys.length > 0) await r.del(...keys);
+  } catch {}
 }
 
 // TTL constants (seconds)

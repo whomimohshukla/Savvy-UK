@@ -127,6 +127,16 @@ export const authApi = {
   logout: (refreshToken: string) =>
     api.post('/api/v1/auth/logout', { refreshToken }),
   me: () => api.get('/api/v1/auth/me'),
+  updateProfile: (data: { name?: string; postcode?: string; householdSize?: number }) =>
+    api.patch('/api/v1/auth/profile', data),
+  changePassword: (data: { currentPassword: string; newPassword: string }) =>
+    api.patch('/api/v1/auth/change-password', data),
+  forgotPassword: (email: string) =>
+    api.post('/api/v1/auth/forgot-password', { email }),
+  resetPassword: (token: string, password: string) =>
+    api.post('/api/v1/auth/reset-password', { token, password }),
+  deleteAccount: (password?: string) =>
+    request('DELETE', '/api/v1/auth/account', { body: password ? { password } : undefined }),
 };
 
 export const dashboardApi = {

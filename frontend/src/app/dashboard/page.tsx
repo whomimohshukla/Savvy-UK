@@ -58,11 +58,7 @@ export default function DashboardPage() {
         <div className="animate-fade-up relative overflow-hidden rounded-3xl p-7 text-white shadow-xl"
           style={{ background: '#030c18' }}
         >
-          {/* orbs */}
-          <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-emerald-500/15 blur-3xl" />
-          <div className="absolute -bottom-8 right-20 h-32 w-32 rounded-full bg-violet-500/15 blur-2xl" />
-
-          <div className="relative">
+          <div>
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="h-4 w-4 text-emerald-400" />
               <p className="text-emerald-400 text-sm font-semibold">Total potential savings found</p>

@@ -9,6 +9,7 @@ import { authApi } from '@/lib/api/client';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton';
 import { Alert } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 interface LoginForm { email: string; password: string; }
 
@@ -31,6 +32,7 @@ export default function LoginPage() {
     try {
       const res = await authApi.login(data) as any;
       setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
+      toast({ title: `Welcome back, ${res.data.user.name?.split(' ')[0] || 'there'}!`, description: 'You are now signed in.' });
       router.push(res.data.user.onboardingDone ? '/dashboard' : '/onboarding');
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');

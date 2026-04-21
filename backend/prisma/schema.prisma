@@ -83,7 +83,8 @@ model User {
   updatedAt         DateTime @updatedAt
 
   // Relations
-  refreshTokens     RefreshToken[]
+  refreshTokens        RefreshToken[]
+  passwordResetTokens  PasswordResetToken[]
   userProfile       UserProfile?
   benefitsChecks    BenefitsCheck[]
   bills             Bill[]
@@ -108,6 +109,19 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 // ============================================

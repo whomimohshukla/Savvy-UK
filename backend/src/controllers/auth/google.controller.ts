@@ -5,6 +5,7 @@ import { prisma } from '../../config/database';
 import { env } from '../../config/env';
 import { AppError } from '../../utils/AppError';
 import { logger } from '../../config/logger';
+import { sendWelcomeEmail } from '../../services/email/email.service';
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
 
@@ -71,6 +72,7 @@ export async function googleAuth(req: Request, res: Response, next: NextFunction
         },
       });
       logger.info(`New user via Google OAuth: ${email}`);
+      sendWelcomeEmail(email, name ?? email).catch(() => {});
     }
 
     const { accessToken, refreshToken } = generateTokens(user.id, user.email);

@@ -7,21 +7,21 @@ const TEAM = [
     role: 'Co-founder & CEO',
     bio: 'Former policy analyst at DWP with 10 years helping families navigate the benefits system.',
     initials: 'AT',
-    gradient: 'from-emerald-400 to-teal-500',
+    bg: 'bg-emerald-600',
   },
   {
     name: 'Priya Sharma',
     role: 'Co-founder & CTO',
     bio: 'Ex-Google engineer passionate about using AI to close the UK welfare gap.',
     initials: 'PS',
-    gradient: 'from-indigo-400 to-purple-500',
+    bg: 'bg-indigo-600',
   },
   {
     name: 'James Okafor',
     role: 'Head of Benefits Research',
     bio: 'Welfare rights specialist with a decade of frontline advice work at Citizens Advice.',
     initials: 'JO',
-    gradient: 'from-amber-400 to-orange-500',
+    bg: 'bg-amber-600',
   },
 ];
 
@@ -62,7 +62,7 @@ export default function AboutPage() {
       <header className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-glow-sm">
+            <div className="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-glow-sm">
               <span className="text-white font-black text-sm">S</span>
             </div>
             <span className="font-bold text-slate-900 text-lg tracking-tight">Savvy UK</span>
@@ -81,17 +81,8 @@ export default function AboutPage() {
       {/* Hero */}
       <section
         className="relative overflow-hidden py-24 px-6"
-        style={{
-          background: '#030c18',
-          backgroundImage: 'radial-gradient(ellipse 90% 60% at 50% -5%, rgba(16,185,129,0.22) 0%, transparent 65%), radial-gradient(ellipse 55% 50% at 90% 20%, rgba(139,92,246,0.15) 0%, transparent 55%)',
-        }}
+        style={{ background: '#030c18' }}
       >
-        {/* Aurora orbs */}
-        <div className="pointer-events-none absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, #10B981 0%, transparent 70%)', filter: 'blur(80px)' }} />
-        <div className="pointer-events-none absolute -bottom-32 -right-32 h-[400px] w-[400px] rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, #6366F1 0%, transparent 70%)', filter: 'blur(80px)' }} />
-
         <div className="relative mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-400 mb-6">
             <Users className="h-3.5 w-3.5" />
@@ -99,7 +90,7 @@ export default function AboutPage() {
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6">
             Built to close the{' '}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+            <span className="text-emerald-400">
               UK welfare gap
             </span>
           </h1>
@@ -204,7 +195,7 @@ export default function AboutPage() {
         <div className="grid sm:grid-cols-3 gap-8">
           {TEAM.map((member) => (
             <div key={member.name} className="text-center">
-              <div className={`h-20 w-20 mx-auto rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center shadow-card mb-4`}>
+              <div className={`h-20 w-20 mx-auto rounded-2xl ${member.bg} flex items-center justify-center shadow-card mb-4`}>
                 <span className="text-white font-extrabold text-xl">{member.initials}</span>
               </div>
               <h3 className="font-bold text-slate-900">{member.name}</h3>

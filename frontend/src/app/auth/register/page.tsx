@@ -9,6 +9,7 @@ import { authApi } from '@/lib/api/client';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton';
 import { Alert } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 interface RegisterForm {
   name: string;
@@ -37,6 +38,7 @@ export default function RegisterPage() {
     try {
       const res = await authApi.register(data) as any;
       setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
+      toast({ title: 'Account created!', description: 'Check your email for a welcome message.' });
       router.push('/onboarding');
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');

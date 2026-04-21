@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from '@/lib/store/auth.store';
 import { authApi } from '@/lib/api/client';
 import { cn } from '@/lib/utils/cn';
+import { toast } from '@/lib/store/toast.store';
 
 const NAV_ITEMS = [
   { href: '/dashboard',           label: 'Dashboard',      icon: LayoutDashboard, exact: true },
@@ -40,6 +41,7 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
   const handleLogout = async () => {
     try { if (refreshToken) await authApi.logout(refreshToken); } catch {}
     clearAuth();
+    toast({ title: 'Signed out', description: 'You have been signed out successfully.' });
     router.push('/');
   };
 

@@ -7,6 +7,7 @@ import { formatCurrency, formatDate, cn } from '@/lib/utils/cn';
 import { Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage, Skeleton } from '@/components/ui/index';
 import { Button } from '@/components/ui/Button';
 import { SavingsChart } from '@/components/dashboard/SavingsChart';
+import { toast } from '@/lib/store/toast.store';
 
 const CATEGORY_CONFIG: Record<string, { label: string; emoji: string; badge: 'green' | 'amber' | 'blue' | 'purple' | 'pink' | 'gray' }> = {
   benefits:  { label: 'Benefits',  emoji: '💷', badge: 'green'  },
@@ -29,8 +30,13 @@ export default function SavingsPage() {
   const claimedCount = records.filter((r: any) => r.claimed).length;
 
   const handleClaim = async (id: string) => {
-    await dashboardApi.markSavingClaimed(id);
-    refetch();
+    try {
+      await dashboardApi.markSavingClaimed(id);
+      toast({ title: 'Saving marked as claimed!', description: 'Great work — keep going.' });
+      refetch();
+    } catch {
+      toast({ title: 'Could not update saving', variant: 'destructive' });
+    }
   };
 
   if (loading) return <LoadingPage />;

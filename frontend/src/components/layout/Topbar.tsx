@@ -4,6 +4,8 @@ import { Menu, Bell, ChevronRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store/auth.store';
+import { useApi } from '@/lib/hooks/useApi';
+import { alertsApi } from '@/lib/api/client';
 
 const PAGE_META: Record<string, { title: string; description: string }> = {
   '/dashboard':           { title: 'Dashboard',      description: 'Your savings overview' },
@@ -24,6 +26,8 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const user = useAuthStore((s) => s.user);
   const meta = PAGE_META[pathname] ?? { title: 'Dashboard', description: '' };
   const initial = (user?.name?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase();
+  const { data: alertsData } = useApi(() => alertsApi.getAlerts('unread') as any);
+  const unreadCount = (alertsData as any)?.data?.length ?? 0;
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-slate-100 bg-white/95 backdrop-blur-md px-4 lg:px-8">
@@ -64,6 +68,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           aria-label="Alerts"
         >
           <Bell className="h-4.5 w-4.5" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
         </Link>
 
         {/* Avatar */}

@@ -85,7 +85,6 @@ app.use(errorHandler);
 async function bootstrap() {
   try {
     await connectRedis();
-    logger.info('✅ Redis connected');
 
     if (env.NODE_ENV === 'production') {
       startCronJobs();

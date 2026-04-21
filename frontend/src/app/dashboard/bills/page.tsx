@@ -7,6 +7,7 @@ import { useApi } from '@/lib/hooks/useApi';
 import { formatCurrency, formatDate, cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
 import { Alert, Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 const BILL_TYPES = [
   { value: 'ENERGY',       label: 'Energy',        emoji: '⚡' },
@@ -48,14 +49,18 @@ export default function BillsPage() {
       const res = await billsApi.upload(fd) as any;
       if (res.success) {
         const saving = res.data?.potentialSaving;
-        setUploadSuccess(saving && saving > 0
-          ? `✅ Bill analysed! We found you could save ${formatCurrency(saving)}/year.`
-          : '✅ Bill uploaded and analysed successfully.');
+        const msg = saving && saving > 0
+          ? `We found you could save ${formatCurrency(saving)}/year!`
+          : 'Bill uploaded and analysed successfully.';
+        setUploadSuccess(msg);
+        toast({ title: 'Bill analysed', description: msg });
         refetch();
         if (fileRef.current) fileRef.current.value = '';
       }
     } catch (err: any) {
-      setUploadError(err?.error || err?.message || 'Upload failed. Please try again.');
+      const msg = err?.message || 'Upload failed. Please try again.';
+      setUploadError(msg);
+      toast({ title: 'Upload failed', description: msg, variant: 'destructive' });
     } finally {
       setUploading(false);
     }
@@ -63,7 +68,13 @@ export default function BillsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this bill?')) return;
-    try { await billsApi.deleteBill(id); refetch(); } catch {}
+    try {
+      await billsApi.deleteBill(id);
+      toast({ title: 'Bill deleted', description: 'The bill has been removed.' });
+      refetch();
+    } catch {
+      toast({ title: 'Delete failed', description: 'Could not delete bill. Try again.', variant: 'destructive' });
+    }
   };
 
   return (
