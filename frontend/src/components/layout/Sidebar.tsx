@@ -151,22 +151,21 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
       {plan.upgradeVisible && (
         <div className="px-3 pb-3">
           <div className="rounded-2xl bg-slate-900 p-4 text-white border border-slate-800">
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-                <p className="text-xs font-bold text-emerald-400">Upgrade to Pro</p>
-              </div>
-              <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-                Unlimited checks, smart alerts &amp; energy comparison
-              </p>
-              <Link
-                href="/dashboard/settings"
-                onClick={onClose}
-                className="flex items-center justify-between rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-400 transition-colors"
-              >
-                <span>£4.99/month</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+              <p className="text-xs font-bold text-emerald-400">Upgrade to Pro</p>
             </div>
+            <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+              Unlimited checks, smart alerts &amp; energy comparison
+            </p>
+            <Link
+              href="/dashboard/settings"
+              onClick={onClose}
+              className="flex items-center justify-between rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-400 transition-colors"
+            >
+              <span>£4.99/month</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       )}

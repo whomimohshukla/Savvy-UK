@@ -203,7 +203,7 @@ function BenefitsResults({ results, onReset }: { results: any; onReset: () => vo
   return (
     <div className="mx-auto max-w-2xl space-y-5 animate-fade-up">
       {/* Hero */}
-      <div className="rounded-2xl bg-gradient-to-br from-green-600 to-green-700 p-6 text-white">
+      <div className="rounded-2xl bg-emerald-600 p-6 text-white">
         <p className="text-green-100 text-sm mb-1 font-medium">Potential annual savings found</p>
         <p className="text-5xl font-extrabold tabular-nums mb-2">{formatCurrency(total)}</p>
         <p className="text-green-100 text-sm">per year — from {benefits.length} benefit{benefits.length !== 1 ? 's' : ''}</p>

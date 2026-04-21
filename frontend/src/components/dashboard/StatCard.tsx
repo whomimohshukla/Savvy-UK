@@ -22,7 +22,7 @@ export function StatCard({
     <div className={cn(
       'card p-5 transition-all duration-200',
       href && 'hover:shadow-card-hover hover:-translate-y-1 cursor-pointer group',
-      highlight && 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-white',
+      highlight && 'border-emerald-200 bg-emerald-50',
       className,
     )}>
       <div className="flex items-start justify-between mb-4">

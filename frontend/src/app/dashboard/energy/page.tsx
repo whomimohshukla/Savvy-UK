@@ -118,7 +118,7 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
     <div className="space-y-4 animate-fade-up">
       {/* Saving hero */}
       {res.potentialSaving > 0 && (
-        <div className="rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 p-6 text-white">
+        <div className="rounded-2xl bg-amber-500 p-6 text-white">
           <div className="flex items-center gap-2 mb-1">
             <TrendingDown className="h-5 w-5 text-orange-200" />
             <p className="text-orange-100 text-sm font-medium">You could save</p>

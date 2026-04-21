@@ -32,7 +32,7 @@ export function LandingNavbar() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 lg:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-glow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-glow-sm">
               <span className="text-sm font-black text-white">S</span>
             </div>
             <span className={`text-lg font-bold tracking-tight transition-colors ${scrolled ? 'text-slate-900' : 'text-white'}`}>

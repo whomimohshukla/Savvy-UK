@@ -56,7 +56,7 @@ export default function DashboardPage() {
       {/* ── Hero banner ── */}
       {totalPotential > 0 ? (
         <div className="animate-fade-up relative overflow-hidden rounded-3xl p-7 text-white shadow-xl"
-          style={{ background: 'linear-gradient(135deg, #030c18 0%, #051a1a 40%, #041524 70%, #030c18 100%)' }}
+          style={{ background: '#030c18' }}
         >
           {/* orbs */}
           <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-emerald-500/15 blur-3xl" />
@@ -91,7 +91,7 @@ export default function DashboardPage() {
         </div>
       ) : (
         /* First-time CTA */
-        <div className="animate-fade-up relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-10 text-center">
+        <div className="animate-fade-up relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-200 bg-emerald-50 p-10 text-center">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100">
             <Sparkles className="h-8 w-8 text-emerald-600" />
           </div>

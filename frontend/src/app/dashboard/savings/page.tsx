@@ -114,7 +114,7 @@ export default function SavingsPage() {
                   </div>
                   <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500"
+                      className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                       style={{ width: `${totalAnnual > 0 ? (totalClaimed / totalAnnual) * 100 : 0}%` }}
                     />
                   </div>

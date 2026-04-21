@@ -85,12 +85,12 @@ export default function OnboardingPage() {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 50%, #F8FAFC 100%)' }}
+      style={{ background: '#FFFFFF' }}
     >
       {/* Header */}
       <header className="flex h-16 items-center justify-between px-6 border-b border-slate-100 bg-white/90 backdrop-blur-sm sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-glow-sm">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-glow-sm">
             <span className="text-sm font-black text-white">S</span>
           </div>
           <span className="font-bold text-slate-900 tracking-tight">Savvy UK</span>
@@ -144,7 +144,7 @@ export default function OnboardingPage() {
             {/* Progress bar */}
             <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-500"
+                className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>

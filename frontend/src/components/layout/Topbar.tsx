@@ -67,7 +67,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         </Link>
 
         {/* Avatar */}
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white text-sm font-bold shadow-glow-sm">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white text-sm font-bold shadow-glow-sm">
           {initial}
         </div>
       </div>
