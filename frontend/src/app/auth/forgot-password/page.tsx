@@ -25,13 +25,13 @@ export default function ForgotPasswordPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-5"
-      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #F0FDF4 50%, #F8FAFC 100%)' }}
+      style={{ background: '#F8FAFC' }}
     >
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 flex items-center gap-2.5">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-glow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-glow-sm">
               <span className="text-sm font-black text-white">S</span>
             </div>
             <span className="text-lg font-bold text-slate-900 tracking-tight">Savvy UK</span>
