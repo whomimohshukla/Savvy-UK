@@ -38,8 +38,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'savvy-auth',
+      // Persist all tokens — accessToken is short-lived (15m) but needed on reload
+      // to avoid a forced refresh-roundtrip on every page load
       partialize: (state) => ({
         user: state.user,
+        accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
