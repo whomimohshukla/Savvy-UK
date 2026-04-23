@@ -38,8 +38,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'savvy-auth',
-      // Persist all tokens — accessToken is short-lived (15m) but needed on reload
-      // to avoid a forced refresh-roundtrip on every page load
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
@@ -49,3 +47,31 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// ── Onboarding completion tracking ───────────────────────────────────────────
+// Stored separately from the Zustand store so it survives logout.
+// This is needed because the server login response may not always return
+// onboardingDone: true even after the user has completed onboarding.
+
+const ONBOARDING_KEY = 'savvy-onboarding-done';
+
+export function markOnboardingDone(email: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const existing: string[] = JSON.parse(localStorage.getItem(ONBOARDING_KEY) || '[]');
+    const normalised = email.toLowerCase();
+    if (!existing.includes(normalised)) {
+      localStorage.setItem(ONBOARDING_KEY, JSON.stringify([...existing, normalised]));
+    }
+  } catch {}
+}
+
+export function isOnboardingDone(email: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const existing: string[] = JSON.parse(localStorage.getItem(ONBOARDING_KEY) || '[]');
+    return existing.includes(email.toLowerCase());
+  } catch {
+    return false;
+  }
+}

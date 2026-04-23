@@ -30,11 +30,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const unreadCount = (alertsData as any)?.data?.length ?? 0;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-slate-100 bg-white/95 backdrop-blur-md px-4 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-emerald-100 bg-white px-4 lg:px-8">
       {/* Mobile menu button */}
       <button
         onClick={onMenuClick}
-        className="flex-shrink-0 rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors lg:hidden"
+        className="flex-shrink-0 rounded-xl p-2 text-green-600 hover:bg-emerald-50 hover:text-green-800 transition-colors lg:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
@@ -42,41 +42,39 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Breadcrumb / Title */}
       <div className="flex-1 min-w-0 flex items-center gap-2">
-        <Link href="/dashboard" className="text-sm text-slate-400 hover:text-slate-600 hidden md:block transition-colors">
+        <Link href="/dashboard" className="text-sm text-green-500 hover:text-green-700 hidden md:block transition-colors">
           Dashboard
         </Link>
         {pathname !== '/dashboard' && (
           <>
-            <ChevronRight className="h-3.5 w-3.5 text-slate-300 hidden md:block" />
-            <h1 className="text-sm font-semibold text-slate-900 truncate">{meta.title}</h1>
+            <ChevronRight className="h-3.5 w-3.5 text-emerald-300 hidden md:block" />
+            <h1 className="text-sm font-semibold text-green-900 truncate">{meta.title}</h1>
           </>
         )}
         {pathname === '/dashboard' && (
-          <h1 className="text-sm font-semibold text-slate-900 truncate md:hidden">{meta.title}</h1>
+          <h1 className="text-sm font-semibold text-green-900 truncate md:hidden">{meta.title}</h1>
         )}
         {meta.description && (
-          <span className="hidden lg:block text-xs text-slate-400">— {meta.description}</span>
+          <span className="hidden lg:block text-xs text-green-400">— {meta.description}</span>
         )}
       </div>
 
       {/* Right actions */}
       <div className="flex items-center gap-2">
-        {/* Alerts button */}
         <Link
           href="/dashboard/alerts"
-          className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+          className="relative flex h-9 w-9 items-center justify-center rounded-xl text-green-500 hover:bg-emerald-50 hover:text-green-700 transition-colors"
           aria-label="Alerts"
         >
           <Bell className="h-4.5 w-4.5" />
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
         </Link>
 
-        {/* Avatar */}
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white text-sm font-bold shadow-glow-sm">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white text-sm font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]">
           {initial}
         </div>
       </div>

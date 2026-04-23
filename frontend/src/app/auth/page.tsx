@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, ArrowRight, PoundSterling, TrendingUp, Shield, ArrowLeft } from 'lucide-react';
 import { authApi } from '@/lib/api/client';
-import { useAuthStore } from '@/lib/store/auth.store';
+import { useAuthStore, isOnboardingDone } from '@/lib/store/auth.store';
 import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton';
 import { Alert, PageLoader } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
@@ -14,16 +14,16 @@ import { toast } from '@/lib/store/toast.store';
 interface LoginForm { email: string; password: string; }
 
 const TRUST_STATS = [
-  { icon: <PoundSterling className="h-5 w-5 text-emerald-300" />, value: '£6,000/year', label: 'Average found per household' },
-  { icon: <TrendingUp className="h-5 w-5 text-emerald-300" />,    value: '7M+',        label: 'UK households missing out' },
-  { icon: <Shield className="h-5 w-5 text-emerald-300" />,        value: '£24 billion', label: 'Unclaimed UK benefits (2025)' },
+  { icon: <PoundSterling className="h-5 w-5 text-emerald-300" />, value: '£6,000/year',  label: 'Average found per household' },
+  { icon: <TrendingUp className="h-5 w-5 text-emerald-300" />,    value: '7M+',          label: 'UK households missing out' },
+  { icon: <Shield className="h-5 w-5 text-emerald-300" />,        value: '£24 billion',  label: 'Unclaimed UK benefits (2025)' },
 ];
 
 export default function LoginPage() {
   const router      = useRouter();
   const setAuth     = useAuthStore((s) => s.setAuth);
-  const [showPass, setShowPass]     = useState(false);
-  const [error, setError]           = useState('');
+  const [showPass, setShowPass]       = useState(false);
+  const [error, setError]             = useState('');
   const [redirecting, setRedirecting] = useState(false);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
@@ -32,10 +32,18 @@ export default function LoginPage() {
     setError('');
     try {
       const res = await authApi.login(data) as any;
-      setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
-      toast({ title: `Welcome back, ${res.data.user.name?.split(' ')[0] || 'there'}!`, description: 'Signed in successfully.' });
+      const serverUser = res.data.user;
+
+      // Merge server response with persistent local flag.
+      // The server login endpoint may not always return onboardingDone: true even
+      // after the user completed onboarding — we keep a local record as fallback.
+      const onboardingComplete = serverUser.onboardingDone || isOnboardingDone(serverUser.email);
+      const mergedUser = { ...serverUser, onboardingDone: onboardingComplete };
+
+      setAuth(mergedUser, res.data.accessToken, res.data.refreshToken);
+      toast({ title: `Welcome back, ${mergedUser.name?.split(' ')[0] || 'there'}!`, description: 'Signed in successfully.' });
       setRedirecting(true);
-      router.push(res.data.user.onboardingDone ? '/dashboard' : '/onboarding');
+      router.push(onboardingComplete ? '/dashboard' : '/onboarding');
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');
     }
@@ -48,7 +56,6 @@ export default function LoginPage() {
 
       {/* ── Left panel ── */}
       <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 text-white bg-emerald-700">
-
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20">
             <span className="text-base font-black text-white">S</span>
@@ -84,11 +91,9 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* ── Right panel — form ── */}
+      {/* ── Right panel ── */}
       <div className="flex flex-1 items-center justify-center bg-white p-6 lg:p-12">
         <div className="w-full max-w-md">
-
-          {/* Mobile logo */}
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
