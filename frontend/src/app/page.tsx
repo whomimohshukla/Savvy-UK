@@ -357,31 +357,31 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════════════ FOOTER ══════════════════ */}
-      <footer className="bg-green-950 text-green-400">
-        <div className="mx-auto max-w-6xl px-5 py-16">
-          <div className="grid gap-10 md:grid-cols-4 mb-12">
+      <footer className="bg-white border-t-2 border-emerald-100">
+        <div className="mx-auto max-w-6xl px-5 py-14">
+          <div className="grid gap-10 md:grid-cols-4 mb-10">
             {/* Brand */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-[0_0_16px_rgba(16,185,129,0.4)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
                   <span className="text-xs font-black text-white">S</span>
                 </div>
-                <span className="font-bold text-white text-lg">
-                  Savvy <span className="text-emerald-400">UK</span>
+                <span className="font-bold text-green-950 text-lg">
+                  Savvy <span className="text-emerald-500">UK</span>
                 </span>
               </div>
-              <p className="text-sm text-green-500 leading-relaxed">
+              <p className="text-sm text-green-600 leading-relaxed">
                 AI-powered tool that finds your unclaimed UK benefits and bill savings.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-4">Product</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-green-500 mb-4">Product</h4>
               <ul className="space-y-3">
                 {[['Features', '#features'], ['Pricing', '#pricing'], ['How it works', '#how-it-works'], ['Dashboard', '/dashboard']].map(([l, h]) => (
                   <li key={l}>
-                    <Link href={h} className="text-sm text-green-400 hover:text-emerald-300 transition-colors">
+                    <Link href={h} className="text-sm text-green-700 hover:text-emerald-600 transition-colors">
                       {l}
                     </Link>
                   </li>
@@ -391,11 +391,11 @@ export default function LandingPage() {
 
             {/* Company */}
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-4">Company</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-green-500 mb-4">Company</h4>
               <ul className="space-y-3">
                 {[['About', '/about'], ['Contact', 'mailto:hello@savvy-uk.com'], ['Privacy', '/privacy'], ['Terms', '/terms']].map(([l, h]) => (
                   <li key={l}>
-                    <Link href={h} className="text-sm text-green-400 hover:text-emerald-300 transition-colors">
+                    <Link href={h} className="text-sm text-green-700 hover:text-emerald-600 transition-colors">
                       {l}
                     </Link>
                   </li>
@@ -405,11 +405,11 @@ export default function LandingPage() {
 
             {/* Resources */}
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-4">Resources</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-green-500 mb-4">Resources</h4>
               <ul className="space-y-3">
                 {[['GOV.UK Benefits', 'https://www.gov.uk/benefits'], ['Universal Credit', 'https://www.gov.uk/universal-credit'], ['Ofgem Tariff', 'https://www.ofgem.gov.uk']].map(([l, h]) => (
                   <li key={l}>
-                    <Link href={h} className="text-sm text-green-400 hover:text-emerald-300 transition-colors">
+                    <Link href={h} className="text-sm text-green-700 hover:text-emerald-600 transition-colors">
                       {l}
                     </Link>
                   </li>
@@ -418,15 +418,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-green-900 pt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-            <p className="text-xs text-green-700 max-w-xl text-center md:text-left">
+          <div className="border-t border-emerald-100 pt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
+            <p className="text-xs text-green-500 max-w-xl text-center md:text-left">
               Savvy UK is an informational tool and is not a regulated financial adviser. Always verify eligibility at{' '}
-              <a href="https://www.gov.uk/benefits" className="underline hover:text-green-500 transition-colors" target="_blank" rel="noopener">
+              <a href="https://www.gov.uk/benefits" className="underline hover:text-emerald-600 transition-colors" target="_blank" rel="noopener">
                 gov.uk
               </a>.
               Data: ONS Dec 2025 · Policy in Practice 2025 · Ofcom 2025 · Ofgem Q1 2026.
             </p>
-            <p className="text-xs text-green-700 flex-shrink-0">
+            <p className="text-xs text-green-500 flex-shrink-0">
               © {new Date().getFullYear()} Savvy UK. All rights reserved.
             </p>
           </div>
