@@ -14,20 +14,13 @@ export default function LandingPage() {
       {/* ══════════════════ HERO ══════════════════ */}
       <section className="relative hero-gradient min-h-screen flex items-center justify-center overflow-hidden pt-16">
 
-        {/* Background decoration orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="hero-orb h-96 w-96 bg-emerald-500/10 -top-24 -left-24 animate-glow" />
-          <div className="hero-orb h-80 w-80 bg-emerald-400/8 top-1/3 right-0 animate-glow" style={{ animationDelay: '1.5s' }} />
-          <div className="hero-orb h-64 w-64 bg-emerald-600/8 bottom-1/4 left-1/4 animate-glow" style={{ animationDelay: '3s' }} />
-        </div>
-
         <div className="relative mx-auto max-w-5xl px-5 text-center py-20 md:py-28">
 
           {/* Live badge */}
-          <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/40 bg-emerald-500/15 px-5 py-2.5 text-sm font-semibold text-emerald-300 animate-fade-down backdrop-blur-sm">
+          <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white animate-fade-down">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
             </span>
             £24 billion in UK benefits goes unclaimed every year
           </div>
@@ -35,12 +28,10 @@ export default function LandingPage() {
           {/* Heading */}
           <h1 className="mb-6 text-5xl font-black tracking-tight text-white md:text-7xl lg:text-8xl leading-[0.93]">
             Stop leaving<br />
-            <span className="bg-gradient-to-r from-emerald-300 to-emerald-500 bg-clip-text text-transparent">
-              money behind.
-            </span>
+            <span className="text-emerald-200">money behind.</span>
           </h1>
 
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-white/65 leading-relaxed md:text-xl">
+          <p className="mx-auto mb-10 max-w-2xl text-lg text-emerald-100 leading-relaxed md:text-xl">
             Our AI scans your situation in 60 seconds and finds every benefit,
             social tariff, and bill saving you're entitled to.{' '}
             <span className="font-bold text-white">Average user discovers £2,700/year.</span>
@@ -50,34 +41,34 @@ export default function LandingPage() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center mb-14">
             <Link
               href="/auth/register"
-              className="group inline-flex items-center gap-2.5 rounded-2xl bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-[0_0_40px_rgba(16,185,129,0.45)] hover:bg-emerald-400 hover:shadow-[0_0_60px_rgba(16,185,129,0.55)] transition-all duration-300 hover:-translate-y-1"
+              className="group inline-flex items-center gap-2.5 rounded-2xl bg-white px-8 py-4 text-base font-bold text-emerald-700 shadow-lg hover:bg-emerald-50 transition-all duration-300 hover:-translate-y-0.5"
             >
               Check my entitlements free
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
             <Link
               href="#how-it-works"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/8 px-8 py-4 text-base font-semibold text-white/85 backdrop-blur-sm hover:bg-white/15 hover:border-white/30 transition-all duration-300"
+              className="inline-flex items-center gap-2 rounded-2xl border-2 border-white/40 px-8 py-4 text-base font-semibold text-white hover:bg-white/10 hover:border-white/60 transition-all duration-300"
             >
               See how it works
             </Link>
           </div>
 
           {/* Trust signal */}
-          <p className="text-sm text-white/35 mb-12 tracking-wide">
+          <p className="text-sm text-emerald-200 mb-12 tracking-wide">
             No credit card · Free forever plan · Takes 60 seconds · Data never sold
           </p>
 
-          {/* Floating stat cards */}
+          {/* Stat cards */}
           <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
             {HERO_STATS.map((s, i) => (
               <div
                 key={s.label}
-                className="rounded-2xl border border-emerald-500/25 bg-white/6 backdrop-blur-xl px-4 py-5 animate-fade-up hover:bg-white/10 hover:border-emerald-400/40 transition-all duration-300"
+                className="rounded-2xl border border-white/20 bg-white/10 px-4 py-5 animate-fade-up hover:bg-white/15 transition-all duration-300"
                 style={{ animationDelay: `${0.2 + i * 0.12}s` }}
               >
-                <p className="text-2xl font-black text-emerald-300 md:text-3xl tabular-nums">{s.value}</p>
-                <p className="mt-1.5 text-xs text-white/45 leading-snug">{s.label}</p>
+                <p className="text-2xl font-black text-white md:text-3xl tabular-nums">{s.value}</p>
+                <p className="mt-1.5 text-xs text-emerald-200 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
@@ -85,9 +76,9 @@ export default function LandingPage() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <p className="text-xs text-white/30 tracking-widest uppercase font-medium">Scroll</p>
-          <div className="h-8 w-4 rounded-full border-2 border-white/20 flex items-start justify-center p-1">
-            <div className="h-2 w-1.5 rounded-full bg-emerald-400 animate-scroll-down" />
+          <p className="text-xs text-emerald-200 tracking-widest uppercase font-medium">Scroll</p>
+          <div className="h-8 w-4 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
+            <div className="h-2 w-1.5 rounded-full bg-white animate-scroll-down" />
           </div>
         </div>
       </section>
@@ -318,41 +309,35 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════════════ CTA BANNER ══════════════════ */}
-      <section className="py-24 cta-gradient relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="hero-orb h-80 w-80 bg-emerald-500/12 -top-20 -right-20 animate-glow" />
-          <div className="hero-orb h-64 w-64 bg-emerald-400/10 bottom-0 left-1/4 animate-glow" style={{ animationDelay: '2s' }} />
-        </div>
-        <div className="relative mx-auto max-w-3xl px-5 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-semibold text-emerald-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      <section className="py-20 bg-emerald-600">
+        <div className="mx-auto max-w-2xl px-5 text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-semibold text-white">
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             Free to start — no card required
           </div>
           <h2 className="text-4xl font-black text-white mb-4 md:text-5xl tracking-tight leading-tight">
             Your unclaimed money<br />
-            <span className="bg-gradient-to-r from-emerald-300 to-emerald-500 bg-clip-text text-transparent">
-              is waiting for you.
-            </span>
+            <span className="text-emerald-200">is waiting for you.</span>
           </h2>
-          <p className="text-white/60 text-lg mb-10 leading-relaxed">
+          <p className="text-emerald-100 text-lg mb-10 leading-relaxed">
             Join thousands of UK residents who've discovered savings they didn't know existed.
             It takes 60 seconds and it's completely free.
           </p>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/auth/register"
-              className="inline-flex items-center gap-2.5 rounded-2xl bg-emerald-500 px-9 py-4 text-base font-bold text-white shadow-[0_0_40px_rgba(16,185,129,0.45)] hover:bg-emerald-400 hover:shadow-[0_0_60px_rgba(16,185,129,0.55)] transition-all duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2.5 rounded-2xl bg-white px-9 py-4 text-base font-bold text-emerald-700 shadow-lg hover:bg-emerald-50 transition-all duration-200 hover:-translate-y-0.5"
             >
               Check my entitlements free <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
               href="#how-it-works"
-              className="inline-flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/8 px-9 py-4 text-base font-semibold text-white/80 backdrop-blur-sm hover:bg-white/12 transition-all duration-300"
+              className="inline-flex items-center gap-2.5 rounded-2xl border-2 border-white/40 px-9 py-4 text-base font-semibold text-white hover:bg-white/10 transition-all duration-200"
             >
               See how it works
             </Link>
           </div>
-          <p className="mt-6 text-sm text-white/30">Free forever plan · Cancel Pro/Premium anytime · ICO registered</p>
+          <p className="mt-6 text-sm text-emerald-200">Free forever plan · Cancel Pro/Premium anytime · ICO registered</p>
         </div>
       </section>
 
