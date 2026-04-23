@@ -87,9 +87,9 @@ export default function BenefitsPage() {
 
       {error && <Alert variant="error">{error}</Alert>}
 
-      <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 flex items-start gap-3">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 flex items-start gap-3">
         <div className="text-xl mt-0.5">💡</div>
-        <p className="text-sm text-amber-800">
+        <p className="text-sm text-emerald-800">
           <strong>£24 billion</strong> in UK benefits goes unclaimed every year.
           The average eligible household is missing out on <strong>£6,000/year</strong>.
         </p>

@@ -80,11 +80,11 @@ export default function BillsPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <FileText className="h-6 w-6 text-blue-500" />
+        <h2 className="text-2xl font-bold text-green-950 flex items-center gap-2">
+          <FileText className="h-6 w-6 text-emerald-500" />
           My Bills
         </h2>
-        <p className="text-slate-500 text-sm mt-1">Upload any bill as PDF — AI will extract details and find cheaper alternatives</p>
+        <p className="text-green-600 text-sm mt-1">Upload any bill as PDF — AI will extract details and find cheaper alternatives</p>
       </div>
 
       {/* Upload card */}
@@ -165,7 +165,7 @@ export default function BillsPage() {
                   <div className="p-5">
                     <div className="flex items-start gap-4">
                       {/* Icon */}
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-xl">
                         {BILL_TYPES.find(t => t.value === bill.type)?.emoji || '📄'}
                       </div>
 

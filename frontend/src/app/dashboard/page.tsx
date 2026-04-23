@@ -8,7 +8,7 @@ import { useAuthStore } from '@/lib/store/auth.store';
 import { formatCurrency, formatDate } from '@/lib/utils/cn';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { SavingsChart } from '@/components/dashboard/SavingsChart';
-import { Card, CardHeader, CardBody, LoadingPage, EmptyState } from '@/components/ui/index';
+import { Card, CardHeader, CardBody, DashboardSkeleton, EmptyState } from '@/components/ui/index';
 import { Button } from '@/components/ui/Button';
 
 export default function DashboardPage() {
@@ -16,7 +16,7 @@ export default function DashboardPage() {
   const { data, loading, error, refetch } = useApi(() => dashboardApi.getDashboard() as any);
   const d = (data as any)?.data;
 
-  if (loading) return <LoadingPage />;
+  if (loading) return <DashboardSkeleton />;
 
   if (error) return (
     <div className="rounded-2xl border border-red-100 bg-red-50 p-6">
@@ -26,11 +26,11 @@ export default function DashboardPage() {
     </div>
   );
 
-  const firstName       = user?.name?.split(' ')[0] || '';
-  const totalPotential  = d?.summary?.totalPotentialSaving ?? 0;
-  const benefitsFound   = d?.summary?.benefitsFound ?? 0;
-  const unreadAlerts    = d?.summary?.unreadAlerts ?? 0;
-  const energySaving    = d?.latestEnergyScan?.potentialSaving ?? 0;
+  const firstName      = user?.name?.split(' ')[0] || '';
+  const totalPotential = d?.summary?.totalPotentialSaving ?? 0;
+  const benefitsFound  = d?.summary?.benefitsFound ?? 0;
+  const unreadAlerts   = d?.summary?.unreadAlerts ?? 0;
+  const energySaving   = d?.latestEnergyScan?.potentialSaving ?? 0;
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
@@ -40,10 +40,10 @@ export default function DashboardPage() {
       {/* ── Welcome header ── */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl font-bold text-green-950 tracking-tight">
             {firstName ? `${greeting}, ${firstName} 👋` : 'Your savings dashboard'}
           </h2>
-          <p className="text-slate-500 mt-1 text-sm">
+          <p className="text-green-600 mt-1 text-sm">
             {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
@@ -55,29 +55,32 @@ export default function DashboardPage() {
 
       {/* ── Hero banner ── */}
       {totalPotential > 0 ? (
-        <div className="animate-fade-up relative overflow-hidden rounded-3xl p-7 text-white shadow-xl"
-          style={{ background: '#030c18' }}
+        <div
+          className="animate-fade-up relative overflow-hidden rounded-3xl p-7 text-white"
+          style={{ background: 'linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%)' }}
         >
-          <div>
+          <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-1/3 h-40 w-40 rounded-full bg-white/5 translate-y-1/2" />
+          <div className="relative">
             <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="h-4 w-4 text-emerald-400" />
-              <p className="text-emerald-400 text-sm font-semibold">Total potential savings found</p>
+              <Sparkles className="h-4 w-4 text-emerald-200" />
+              <p className="text-emerald-100 text-sm font-semibold">Total potential savings found</p>
             </div>
-            <p className="text-6xl font-black tracking-tight mb-1.5">
+            <p className="text-6xl font-black tracking-tight mb-1.5 tabular-nums">
               {formatCurrency(totalPotential)}
             </p>
-            <p className="text-slate-400 text-sm mb-6">per year — ready for you to claim</p>
+            <p className="text-emerald-100 text-sm mb-6">per year — ready for you to claim</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/dashboard/benefits"
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-400 transition-colors shadow-glow-sm"
+                className="inline-flex items-center gap-2 rounded-xl bg-white text-emerald-700 px-5 py-2.5 text-sm font-bold hover:bg-emerald-50 transition-colors"
               >
                 View all savings <ArrowRight className="h-4 w-4" />
               </Link>
               {!d?.latestBenefits && (
                 <Link
                   href="/dashboard/benefits"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/15 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
                 >
                   Run benefits check
                 </Link>
@@ -91,13 +94,13 @@ export default function DashboardPage() {
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100">
             <Sparkles className="h-8 w-8 text-emerald-600" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">Discover your savings</h3>
-          <p className="text-slate-500 text-sm mb-6 max-w-md mx-auto leading-relaxed">
+          <h3 className="text-xl font-bold text-green-950 mb-2">Discover your savings</h3>
+          <p className="text-green-600 text-sm mb-6 max-w-md mx-auto leading-relaxed">
             Run a benefits check to find out how much money you could be claiming.
-            The average UK household finds <strong className="text-slate-700">£2,700/year</strong>.
+            The average UK household finds <strong className="text-green-800">£2,700/year</strong>.
           </p>
           <Link href="/dashboard/benefits">
-            <Button size="lg" className="shadow-glow-sm">
+            <Button size="lg">
               Start benefits check <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -119,24 +122,24 @@ export default function DashboardPage() {
           label="Energy saving"
           value={energySaving > 0 ? formatCurrency(energySaving) : 'Not scanned'}
           subvalue={energySaving > 0 ? 'per year' : 'Run a scan'}
-          icon={<Zap className="h-5 w-5 text-amber-500" />}
-          iconBg="bg-amber-100"
+          icon={<Zap className="h-5 w-5 text-emerald-600" />}
+          iconBg="bg-emerald-100"
           href="/dashboard/energy"
         />
         <StatCard
           label="Bills analysed"
           value={d?.recentBills?.length ?? 0}
           subvalue="bills uploaded"
-          icon={<FileText className="h-5 w-5 text-blue-500" />}
-          iconBg="bg-blue-100"
+          icon={<FileText className="h-5 w-5 text-emerald-600" />}
+          iconBg="bg-emerald-100"
           href="/dashboard/bills"
         />
         <StatCard
           label="Unread alerts"
           value={unreadAlerts}
           subvalue={unreadAlerts > 0 ? 'need attention' : 'All caught up!'}
-          icon={<Bell className="h-5 w-5 text-violet-500" />}
-          iconBg="bg-violet-100"
+          icon={<Bell className="h-5 w-5 text-emerald-600" />}
+          iconBg="bg-emerald-100"
           href="/dashboard/alerts"
         />
       </div>
@@ -156,12 +159,12 @@ export default function DashboardPage() {
           />
           <CardBody className="p-0">
             {d?.recentSavings?.length > 0 ? (
-              <div className="divide-y divide-slate-50">
+              <div className="divide-y divide-emerald-50">
                 {d.recentSavings.slice(0, 5).map((s: any) => (
-                  <div key={s.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50 transition-colors">
+                  <div key={s.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-emerald-50/40 transition-colors">
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{s.description}</p>
-                      <p className="text-xs text-slate-400 mt-0.5 capitalize">
+                      <p className="text-sm font-semibold text-green-900 truncate">{s.description}</p>
+                      <p className="text-xs text-green-500 mt-0.5 capitalize">
                         {s.category} · {formatDate(s.createdAt)}
                       </p>
                     </div>
@@ -190,18 +193,18 @@ export default function DashboardPage() {
 
         {/* Quick actions */}
         <div className="space-y-3">
-          <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest">Quick actions</h3>
+          <h3 className="text-sm font-bold text-green-700 uppercase tracking-widest">Quick actions</h3>
           {QUICK_ACTIONS.map((action) => (
             <Link key={action.href} href={action.href} className="block group">
-              <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition-all group-hover:shadow-card-hover group-hover:-translate-y-0.5">
-                <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${action.iconBg}`}>
+              <div className="flex items-center gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm transition-all group-hover:shadow-[0_4px_20px_rgba(16,185,129,0.12)] group-hover:-translate-y-0.5">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100">
                   {action.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-900">{action.title}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{action.description}</p>
+                  <p className="text-sm font-semibold text-green-900">{action.title}</p>
+                  <p className="text-xs text-green-600 mt-0.5">{action.description}</p>
                 </div>
-                <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                <ArrowRight className="h-4 w-4 text-emerald-300 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
               </div>
             </Link>
           ))}
@@ -229,20 +232,17 @@ const QUICK_ACTIONS = [
     title: 'Run a benefits check',
     description: 'Check 40+ UK benefits in 60 seconds',
     icon: <PoundSterling className="h-5 w-5 text-emerald-600" />,
-    iconBg: 'bg-emerald-100',
   },
   {
     href: '/dashboard/bills',
     title: 'Upload a bill',
     description: 'AI finds cheaper deals from your PDF',
-    icon: <FileText className="h-5 w-5 text-blue-500" />,
-    iconBg: 'bg-blue-100',
+    icon: <FileText className="h-5 w-5 text-emerald-600" />,
   },
   {
     href: '/dashboard/energy',
     title: 'Compare energy deals',
     description: 'Find the cheapest tariff for your home',
-    icon: <Zap className="h-5 w-5 text-amber-500" />,
-    iconBg: 'bg-amber-100',
+    icon: <Zap className="h-5 w-5 text-emerald-600" />,
   },
 ];
