@@ -19,7 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     {label && <label className="form-label">{label}</label>}
     <div className="relative">
       {prefix && (
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 select-none font-medium">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-green-400 select-none font-medium">
           {prefix}
         </span>
       )}
@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         {...props}
       />
       {suffix && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-400">
           {suffix}
         </span>
       )}
@@ -45,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />{error}
       </p>
     )}
-    {hint && !error && <p className="mt-1.5 text-xs text-slate-400">{hint}</p>}
+    {hint && !error && <p className="mt-1.5 text-xs text-green-400">{hint}</p>}
   </div>
 ));
 Input.displayName = 'Input';
@@ -122,14 +122,14 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
       id={id}
       type="checkbox"
       className={cn(
-        'mt-0.5 h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 cursor-pointer accent-emerald-500',
+        'mt-0.5 h-4 w-4 rounded border-emerald-200 text-emerald-500 focus:ring-emerald-500 cursor-pointer accent-emerald-500',
         className,
       )}
       {...props}
     />
     <div>
-      <span className="text-sm text-slate-700 group-hover:text-slate-900 leading-none font-medium">{label}</span>
-      {description && <p className="text-xs text-slate-400 mt-0.5">{description}</p>}
+      <span className="text-sm text-green-800 group-hover:text-green-900 leading-none font-medium">{label}</span>
+      {description && <p className="text-xs text-green-400 mt-0.5">{description}</p>}
     </div>
   </label>
 ));
