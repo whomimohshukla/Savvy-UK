@@ -6,7 +6,7 @@ import { billsApi } from '@/lib/api/client';
 import { useApi } from '@/lib/hooks/useApi';
 import { formatCurrency, formatDate, cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
-import { Alert, Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage } from '@/components/ui/index';
+import { Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 const BILL_TYPES = [
@@ -26,8 +26,6 @@ const TYPE_BADGE: Record<string, 'amber' | 'blue' | 'pink' | 'purple' | 'gray' |
 
 export default function BillsPage() {
   const [uploading, setUploading]       = useState(false);
-  const [uploadError, setUploadError]   = useState('');
-  const [uploadSuccess, setUploadSuccess] = useState('');
   const [selectedType, setSelectedType] = useState('ENERGY');
   const [expandedId, setExpandedId]     = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -37,10 +35,10 @@ export default function BillsPage() {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.type !== 'application/pdf') { setUploadError('Only PDF files are accepted'); return; }
-    if (file.size > 10 * 1024 * 1024)   { setUploadError('File must be under 10MB'); return; }
+    if (file.type !== 'application/pdf') { toast({ variant: 'error', title: 'Wrong file type', description: 'Only PDF files are accepted.' }); return; }
+    if (file.size > 10 * 1024 * 1024)   { toast({ variant: 'error', title: 'File too large', description: 'File must be under 10MB.' }); return; }
 
-    setUploading(true); setUploadError(''); setUploadSuccess('');
+    setUploading(true);
     const fd = new FormData();
     fd.append('bill', file);
     fd.append('type', selectedType);
@@ -52,15 +50,12 @@ export default function BillsPage() {
         const msg = saving && saving > 0
           ? `We found you could save ${formatCurrency(saving)}/year!`
           : 'Bill uploaded and analysed successfully.';
-        setUploadSuccess(msg);
-        toast({ title: 'Bill analysed', description: msg });
+        toast({ variant: 'success', title: 'Bill analysed', description: msg });
         refetch();
         if (fileRef.current) fileRef.current.value = '';
       }
     } catch (err: any) {
-      const msg = err?.message || 'Upload failed. Please try again.';
-      setUploadError(msg);
-      toast({ title: 'Upload failed', description: msg, variant: 'destructive' });
+      toast({ variant: 'error', title: 'Upload failed', description: err?.message || 'Please try again.' });
     } finally {
       setUploading(false);
     }
@@ -104,7 +99,7 @@ export default function BillsPage() {
                     'flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition-all',
                     selectedType === t.value
                       ? 'bg-emerald-600 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50',
+                      : 'border border-emerald-200 bg-white text-green-700 hover:border-emerald-300 hover:bg-emerald-50',
                   )}
                 >
                   <span>{t.emoji}</span>{t.label}
@@ -118,7 +113,7 @@ export default function BillsPage() {
             'flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 cursor-pointer transition-all',
             uploading
               ? 'border-emerald-300 bg-emerald-50'
-              : 'border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/30',
+              : 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50/30',
           )}>
             <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={handleUpload} disabled={uploading} />
             {uploading ? (
@@ -129,11 +124,11 @@ export default function BillsPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 mb-1">
-                  <Upload className="h-6 w-6 text-slate-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 mb-1">
+                  <Upload className="h-6 w-6 text-green-400" />
                 </div>
-                <p className="text-sm font-medium text-gray-700">Click to upload your bill</p>
-                <p className="text-xs text-slate-400">PDF only · Max 10MB · We never store your files</p>
+                <p className="text-sm font-medium text-green-800">Click to upload your bill</p>
+                <p className="text-xs text-green-400">PDF only · Max 10MB · We never store your files</p>
               </div>
             )}
           </label>
@@ -147,7 +142,7 @@ export default function BillsPage() {
       {loading ? <LoadingPage /> : (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-semibold text-slate-900">Your bills ({bills.length})</h3>
+            <h3 className="text-base font-semibold text-green-950">Your bills ({bills.length})</h3>
           </div>
 
           {bills.length === 0 ? (
@@ -176,12 +171,12 @@ export default function BillsPage() {
                             {bill.type.replace('_', ' ')}
                           </Badge>
                           {bill.supplier && (
-                            <span className="text-sm font-semibold text-slate-900">{bill.supplier}</span>
+                            <span className="text-sm font-semibold text-green-950">{bill.supplier}</span>
                           )}
                         </div>
-                        <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-                          {bill.annualCost && <span>Annual: <span className="text-slate-600 font-medium">{formatCurrency(bill.annualCost)}</span></span>}
-                          {bill.monthlyAmount && <span>Monthly: <span className="text-slate-600 font-medium">{formatCurrency(bill.monthlyAmount)}</span></span>}
+                        <div className="flex flex-wrap gap-3 text-xs text-green-400">
+                          {bill.annualCost && <span>Annual: <span className="text-green-700 font-medium">{formatCurrency(bill.annualCost)}</span></span>}
+                          {bill.monthlyAmount && <span>Monthly: <span className="text-green-700 font-medium">{formatCurrency(bill.monthlyAmount)}</span></span>}
                           <span>Uploaded {formatDate(bill.uploadedAt)}</span>
                         </div>
                       </div>
@@ -198,13 +193,13 @@ export default function BillsPage() {
                         )}
                         <button
                           onClick={() => setExpandedId(expandedId === bill.id ? null : bill.id)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors"
+                          className="rounded-lg p-1.5 text-green-400 hover:bg-emerald-100 transition-colors"
                         >
                           <ChevronDown className={cn('h-4 w-4 transition-transform', expandedId === bill.id && 'rotate-180')} />
                         </button>
                         <button
                           onClick={() => handleDelete(bill.id)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                          className="rounded-lg p-1.5 text-green-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -213,15 +208,15 @@ export default function BillsPage() {
 
                     {/* Expanded: AI analysis */}
                     {expandedId === bill.id && bill.aiAnalysis && (
-                      <div className="mt-4 pt-4 border-t border-slate-100 animate-fade-in">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">AI Analysis</p>
-                        <p className="text-sm text-slate-600 leading-relaxed">{bill.aiAnalysis}</p>
+                      <div className="mt-4 pt-4 border-t border-emerald-100 animate-fade-in">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-green-400 mb-2">AI Analysis</p>
+                        <p className="text-sm text-green-700 leading-relaxed">{bill.aiAnalysis}</p>
                         {bill.extractedData?.recommendations?.length > 0 && (
                           <div className="mt-3">
-                            <p className="text-xs font-semibold text-slate-500 mb-1.5">Recommendations:</p>
+                            <p className="text-xs font-semibold text-green-600 mb-1.5">Recommendations:</p>
                             <ul className="space-y-1">
                               {bill.extractedData.recommendations.map((r: string, i: number) => (
-                                <li key={i} className="flex items-start gap-2 text-xs text-slate-500">
+                                <li key={i} className="flex items-start gap-2 text-xs text-green-600">
                                   <span className="text-emerald-500 mt-0.5">•</span>{r}
                                 </li>
                               ))}
