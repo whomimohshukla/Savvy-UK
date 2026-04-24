@@ -10,7 +10,7 @@ import {
 import { useAuthStore } from '@/lib/store/auth.store';
 import { subscriptionApi, authApi } from '@/lib/api/client';
 import { useApi } from '@/lib/hooks/useApi';
-import { Card, CardHeader, CardBody, Alert, Badge } from '@/components/ui/index';
+import { Card, CardHeader, CardBody, Badge } from '@/components/ui/index';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/lib/store/toast.store';
 
@@ -21,33 +21,30 @@ interface PasswordForm { currentPassword: string; newPassword: string; confirmPa
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew]         = useState(false);
-  const [error, setError]             = useState('');
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<PasswordForm>();
 
   const onSubmit = async (data: PasswordForm) => {
-    setError('');
     try {
       await authApi.changePassword({ currentPassword: data.currentPassword, newPassword: data.newPassword });
-      toast({ title: 'Password updated', description: 'Your password has been changed. An email confirmation has been sent.' });
+      toast({ variant: 'success', title: 'Password updated', description: 'Your password has been changed.' });
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to update password');
+      toast({ variant: 'error', title: 'Update failed', description: err.message || 'Failed to update password.' });
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md rounded-2xl bg-white border border-slate-100 shadow-xl p-6 animate-scale-in">
+      <div className="w-full max-w-md rounded-2xl bg-white border border-emerald-100 shadow-xl p-6 animate-scale-in">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Change password</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Other sessions will be signed out.</p>
+            <h3 className="text-lg font-bold text-green-950">Change password</h3>
+            <p className="text-xs text-green-400 mt-0.5">Other sessions will be signed out.</p>
           </div>
-          <button onClick={onClose} className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 transition-colors">
+          <button onClick={onClose} className="rounded-xl p-1.5 text-green-400 hover:bg-emerald-50 transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
-        {error && <Alert variant="error" className="mb-4">{error}</Alert>}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="form-label">Current password</label>
@@ -57,7 +54,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 placeholder="••••••••"
                 {...register('currentPassword', { required: 'Required' })} />
               <button type="button" onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-green-400 hover:text-green-700">
                 {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
@@ -71,7 +68,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 placeholder="Min 8 characters"
                 {...register('newPassword', { required: 'Required', minLength: { value: 8, message: 'At least 8 characters' } })} />
               <button type="button" onClick={() => setShowNew(!showNew)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-green-400 hover:text-green-700">
                 {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
@@ -106,7 +103,6 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
   const user    = useAuthStore((s) => s.user);
   const setAuth = useAuthStore((s) => s.setAuth);
   const { accessToken, refreshToken } = useAuthStore();
-  const [error, setError] = useState('');
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileForm>({
     defaultValues: {
@@ -117,7 +113,6 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
   });
 
   const onSubmit = async (data: ProfileForm) => {
-    setError('');
     try {
       const res = await authApi.updateProfile({
         name: data.name,
@@ -125,26 +120,25 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
         householdSize: Number(data.householdSize),
       }) as any;
       setAuth(res.data, accessToken!, refreshToken!);
-      toast({ title: 'Profile updated', description: 'Your details have been saved.' });
+      toast({ variant: 'success', title: 'Profile updated', description: 'Your details have been saved.' });
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to save profile');
+      toast({ variant: 'error', title: 'Update failed', description: err.message || 'Failed to save profile.' });
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md rounded-2xl bg-white border border-slate-100 shadow-xl p-6 animate-scale-in">
+      <div className="w-full max-w-md rounded-2xl bg-white border border-emerald-100 shadow-xl p-6 animate-scale-in">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Edit profile</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Update your personal details.</p>
+            <h3 className="text-lg font-bold text-green-950">Edit profile</h3>
+            <p className="text-xs text-green-400 mt-0.5">Update your personal details.</p>
           </div>
-          <button onClick={onClose} className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 transition-colors">
+          <button onClick={onClose} className="rounded-xl p-1.5 text-green-400 hover:bg-emerald-50 transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
-        {error && <Alert variant="error" className="mb-4">{error}</Alert>}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="form-label">Full name</label>
@@ -186,7 +180,6 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
   const router    = useRouter();
   const [password, setPassword]   = useState('');
   const [confirm, setConfirm]     = useState('');
-  const [error, setError]         = useState('');
   const [loading, setLoading]     = useState(false);
   const [showPass, setShowPass]   = useState(false);
 
@@ -195,14 +188,14 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
 
   const handleDelete = async () => {
     if (confirm !== 'DELETE') return;
-    setLoading(true); setError('');
+    setLoading(true);
     try {
       await authApi.deleteAccount(isGoogleUser ? undefined : password);
       clearAuth();
-      toast({ title: 'Account deleted', description: 'Your account and all data have been permanently removed.' });
+      toast({ variant: 'success', title: 'Account deleted', description: 'Your account and all data have been permanently removed.' });
       router.push('/');
     } catch (err: any) {
-      setError(err.message || 'Failed to delete account. Please try again.');
+      toast({ variant: 'error', title: 'Delete failed', description: err.message || 'Failed to delete account. Please try again.' });
       setLoading(false);
     }
   };
@@ -216,11 +209,11 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
               <Trash2 className="h-5 w-5 text-red-600" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Delete account</h3>
+              <h3 className="text-lg font-bold text-green-950">Delete account</h3>
               <p className="text-xs text-red-500 mt-0.5">This action cannot be undone.</p>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 transition-colors">
+          <button onClick={onClose} className="rounded-xl p-1.5 text-green-400 hover:bg-emerald-50 transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -235,8 +228,6 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
           </ul>
         </div>
 
-        {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
         <div className="space-y-4">
           {!isGoogleUser && (
             <div>
@@ -250,7 +241,7 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-green-400 hover:text-green-700">
                   {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -309,7 +300,6 @@ const PLANS = [
 export default function SettingsPage() {
   const user = useAuthStore((s) => s.user);
   const [upgrading, setUpgrading]           = useState('');
-  const [upgradeError, setUpgradeError]     = useState('');
   const [showPasswordModal, setShowPasswordModal]   = useState(false);
   const [showProfileModal, setShowProfileModal]     = useState(false);
   const [showDeleteModal, setShowDeleteModal]       = useState(false);
@@ -318,13 +308,12 @@ export default function SettingsPage() {
   const currentPlan = user?.plan || 'FREE';
 
   const handleUpgrade = async (plan: string) => {
-    setUpgrading(plan); setUpgradeError('');
+    setUpgrading(plan);
     try {
       const res = await subscriptionApi.createCheckout(plan) as any;
       window.location.href = res.data.checkoutUrl;
     } catch (err: any) {
-      setUpgradeError(err.message || 'Failed to start checkout');
-      toast({ title: 'Checkout failed', description: err.message, variant: 'destructive' });
+      toast({ variant: 'error', title: 'Checkout failed', description: err.message || 'Failed to start checkout.' });
     } finally {
       setUpgrading('');
     }
@@ -337,11 +326,11 @@ export default function SettingsPage() {
       {showDeleteModal   && <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />}
 
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Settings className="h-6 w-6 text-slate-500" />
+        <h2 className="text-2xl font-bold text-green-950 flex items-center gap-2">
+          <Settings className="h-6 w-6 text-green-600" />
           Settings
         </h2>
-        <p className="text-slate-500 text-sm mt-0.5">Manage your account and subscription</p>
+        <p className="text-green-600 text-sm mt-0.5">Manage your account and subscription</p>
       </div>
 
       {/* ── Profile ── */}
@@ -363,9 +352,9 @@ export default function SettingsPage() {
             { label: 'Plan',            value: currentPlan },
           ].map((row, i, arr) => (
             <div key={row.label}
-              className={`flex items-center justify-between px-6 py-4 ${i < arr.length - 1 ? 'border-b border-slate-50' : ''}`}>
-              <span className="text-sm text-slate-500">{row.label}</span>
-              <span className="text-sm font-medium text-slate-900">{row.value}</span>
+              className={`flex items-center justify-between px-6 py-4 ${i < arr.length - 1 ? 'border-b border-emerald-50' : ''}`}>
+              <span className="text-sm text-green-600">{row.label}</span>
+              <span className="text-sm font-medium text-green-950">{row.value}</span>
             </div>
           ))}
         </CardBody>
@@ -386,7 +375,6 @@ export default function SettingsPage() {
           }
         />
         <CardBody className="space-y-4">
-          {upgradeError && <Alert variant="error">{upgradeError}</Alert>}
           <div className="grid gap-3">
             {PLANS.map((plan) => {
               const isActive = currentPlan === plan.id;
@@ -394,8 +382,8 @@ export default function SettingsPage() {
                 <div key={plan.id}
                   className={`relative rounded-xl border p-4 transition-all ${
                     isActive ? 'border-emerald-300 bg-emerald-50/50'
-                    : plan.popular ? 'border-slate-200 hover:border-emerald-200'
-                    : 'border-slate-100 hover:border-slate-200'
+                    : plan.popular ? 'border-emerald-200 hover:border-emerald-200'
+                    : 'border-emerald-100 hover:border-emerald-200'
                   }`}>
                   {plan.popular && !isActive && (
                     <div className="absolute -top-2.5 left-4 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
@@ -405,7 +393,7 @@ export default function SettingsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-slate-900">{plan.name}</span>
+                        <span className="font-semibold text-green-950">{plan.name}</span>
                         {isActive && (
                           <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
                             <CheckCircle2 className="h-3 w-3" />Current plan
@@ -413,14 +401,14 @@ export default function SettingsPage() {
                         )}
                       </div>
                       <div className="flex items-baseline gap-1 mb-3">
-                        <span className="text-2xl font-extrabold text-slate-900">
+                        <span className="text-2xl font-extrabold text-green-950">
                           {plan.price === 0 ? 'Free' : `£${plan.price}`}
                         </span>
-                        {plan.price > 0 && <span className="text-sm text-slate-400">/month</span>}
+                        {plan.price > 0 && <span className="text-sm text-green-400">/month</span>}
                       </div>
                       <ul className="space-y-1">
                         {plan.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-xs text-slate-500">
+                          <li key={f} className="flex items-center gap-2 text-xs text-green-600">
                             <CheckCircle2 className="h-3 w-3 flex-shrink-0 text-emerald-500" />{f}
                           </li>
                         ))}
@@ -444,23 +432,23 @@ export default function SettingsPage() {
             })}
           </div>
           {sub?.subscription && currentPlan !== 'FREE' && (
-            <div className="mt-2 rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-1.5 text-sm">
+            <div className="mt-2 rounded-xl bg-emerald-50/30 border border-emerald-100 p-4 space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">Status</span>
-                <span className="font-medium capitalize text-slate-900">{sub.subscription.status?.toLowerCase()}</span>
+                <span className="text-green-600">Status</span>
+                <span className="font-medium capitalize text-green-950">{sub.subscription.status?.toLowerCase()}</span>
               </div>
               {sub.subscription.currentPeriodEnd && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Next billing</span>
-                  <span className="font-medium text-slate-900">
+                  <span className="text-green-600">Next billing</span>
+                  <span className="font-medium text-green-950">
                     {new Date(sub.subscription.currentPeriodEnd).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
               )}
               {sub.subscription.priceGbp && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Amount</span>
-                  <span className="font-medium text-slate-900">£{sub.subscription.priceGbp}/month</span>
+                  <span className="text-green-600">Amount</span>
+                  <span className="font-medium text-green-950">£{sub.subscription.priceGbp}/month</span>
                 </div>
               )}
             </div>
@@ -470,12 +458,12 @@ export default function SettingsPage() {
 
       {/* ── Security ── */}
       <Card>
-        <CardHeader title="Security" action={<Shield className="h-4 w-4 text-slate-400" />} />
-        <CardBody className="divide-y divide-slate-50 p-0">
+        <CardHeader title="Security" action={<Shield className="h-4 w-4 text-green-400" />} />
+        <CardBody className="divide-y divide-emerald-50 p-0">
           <div className="flex items-center justify-between px-6 py-4">
             <div>
-              <p className="text-sm font-medium text-slate-900">Password</p>
-              <p className="text-xs text-slate-400">Change your account password</p>
+              <p className="text-sm font-medium text-green-950">Password</p>
+              <p className="text-xs text-green-400">Change your account password</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setShowPasswordModal(true)}>
               Change password
@@ -483,8 +471,8 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between px-6 py-4">
             <div>
-              <p className="text-sm font-medium text-slate-900">Email address</p>
-              <p className="text-xs text-slate-400">{user?.email}</p>
+              <p className="text-sm font-medium text-green-950">Email address</p>
+              <p className="text-xs text-green-400">{user?.email}</p>
             </div>
             <span className="badge-green">
               <CheckCircle2 className="h-3 w-3" />Verified
@@ -506,9 +494,9 @@ export default function SettingsPage() {
             <a key={link.label} href={link.href}
               target={link.external ? '_blank' : undefined}
               rel={link.external ? 'noopener noreferrer' : undefined}
-              className="flex items-center justify-between px-6 py-3.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+              className="flex items-center justify-between px-6 py-3.5 text-sm text-green-700 hover:bg-emerald-50 transition-colors">
               {link.label}
-              <ExternalLink className="h-3.5 w-3.5 text-slate-300" />
+              <ExternalLink className="h-3.5 w-3.5 text-green-300" />
             </a>
           ))}
         </CardBody>
@@ -521,7 +509,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-red-600">Delete account</p>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-green-400 mt-0.5">
                 Permanently delete your account and all data. This cannot be undone.
               </p>
             </div>
@@ -538,7 +526,7 @@ export default function SettingsPage() {
         </CardBody>
       </Card>
 
-      <p className="text-xs text-slate-400 text-center pb-4">
+      <p className="text-xs text-green-400 text-center pb-4">
         Savvy UK provides informational guidance only — not regulated financial advice.
         We do not store uploaded bill files. Registered with the ICO.
       </p>
