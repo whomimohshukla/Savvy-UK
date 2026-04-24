@@ -5,21 +5,19 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { ArrowLeft, CheckCircle2, Mail, ArrowRight } from 'lucide-react';
 import { authApi } from '@/lib/api/client';
-import { Alert } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 export default function ForgotPasswordPage() {
-  const [sent, setSent]   = useState(false);
-  const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
 
   const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm<{ email: string }>();
 
   const onSubmit = async (data: { email: string }) => {
-    setError('');
     try {
       await authApi.forgotPassword(data.email);
       setSent(true);
     } catch (err: any) {
-      setError(err.message || 'Failed to send reset email. Please try again.');
+      toast({ variant: 'error', title: 'Could not send reset email', description: err.message || 'Please try again.' });
     }
   };
 
@@ -38,7 +36,6 @@ export default function ForgotPasswordPage() {
         </div>
 
         {sent ? (
-          /* ── Success state ── */
           <div className="rounded-2xl border border-emerald-100 bg-white p-10 text-center shadow-sm animate-scale-in">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100">
               <CheckCircle2 className="h-8 w-8 text-emerald-600" />
@@ -56,7 +53,7 @@ export default function ForgotPasswordPage() {
                 Back to sign in <ArrowRight className="h-4 w-4" />
               </Link>
               <button
-                onClick={() => { setSent(false); setError(''); }}
+                onClick={() => setSent(false)}
                 className="w-full text-sm text-green-500 hover:text-green-700 transition-colors py-2"
               >
                 Didn&apos;t receive it? Send again
@@ -64,7 +61,6 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
         ) : (
-          /* ── Form state ── */
           <div className="rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="mb-6">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
@@ -75,8 +71,6 @@ export default function ForgotPasswordPage() {
                 Enter your email and we&apos;ll send you a secure reset link.
               </p>
             </div>
-
-            {error && <Alert variant="error" className="mb-5">{error}</Alert>}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
