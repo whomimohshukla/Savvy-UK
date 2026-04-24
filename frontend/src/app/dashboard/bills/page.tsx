@@ -62,13 +62,12 @@ export default function BillsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this bill?')) return;
     try {
       await billsApi.deleteBill(id);
-      toast({ title: 'Bill deleted', description: 'The bill has been removed.' });
+      toast({ variant: 'success', title: 'Bill deleted', description: 'The bill has been removed.' });
       refetch();
     } catch {
-      toast({ title: 'Delete failed', description: 'Could not delete bill. Try again.', variant: 'destructive' });
+      toast({ variant: 'error', title: 'Delete failed', description: 'Could not delete bill. Try again.' });
     }
   };
 
@@ -133,8 +132,6 @@ export default function BillsPage() {
             )}
           </label>
 
-          {uploadError   && <Alert variant="error">{uploadError}</Alert>}
-          {uploadSuccess && <Alert variant="success">{uploadSuccess}</Alert>}
         </CardBody>
       </Card>
 

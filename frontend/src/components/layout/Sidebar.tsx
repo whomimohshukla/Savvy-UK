@@ -41,7 +41,7 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
   const handleLogout = async () => {
     try { if (refreshToken) await authApi.logout(refreshToken); } catch {}
     clearAuth();
-    toast({ title: 'Signed out', description: 'You have been signed out successfully.' });
+    toast({ variant: 'success', title: 'Signed out', description: 'You have been signed out successfully.' });
     router.push('/');
   };
 
@@ -57,7 +57,7 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
 
       {/* ── Logo ── */}
       <div className="flex h-16 items-center justify-between px-5 border-b border-emerald-100">
-        <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onClose}>
+        <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
             <span className="text-sm font-black text-white">S</span>
           </div>

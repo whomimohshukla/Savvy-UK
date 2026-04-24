@@ -8,6 +8,9 @@ export interface User {
   plan: 'FREE' | 'PRO' | 'PREMIUM';
   postcode: string | null;
   onboardingDone: boolean;
+  googleId?: string | null;
+  householdSize?: number | null;
+  avatarUrl?: string | null;
 }
 
 interface AuthState {

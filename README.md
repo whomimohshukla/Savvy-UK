@@ -151,7 +151,8 @@ savvy-uk/
         │   ├── ui/
         │   │   ├── Button.tsx                  # All button variants
         │   │   ├── FormFields.tsx              # Input, Select, Checkbox, Textarea
-        │   │   └── index.tsx                   # Card, Badge, Alert, Spinner, EmptyState
+        │   │   ├── toaster.tsx                 # Custom toast UI (top-right, animated progress)
+        │   │   └── index.tsx                   # Card, Badge, Spinner, EmptyState
         │   ├── layout/
         │   │   ├── Sidebar.tsx                 # Full sidebar with nav + upgrade banner
         │   │   └── Topbar.tsx                  # Mobile header + alerts bell
@@ -254,6 +255,10 @@ npm run dev       # starts both on :3000 and :5000
 | POST | `/api/v1/auth/logout` | ✅ | Revoke refresh token |
 | GET  | `/api/v1/auth/me` | ✅ | Current user |
 | PATCH | `/api/v1/auth/profile` | ✅ | Update profile + onboarding |
+| PATCH | `/api/v1/auth/change-password` | ✅ | Change password (email users) |
+| POST | `/api/v1/auth/forgot-password` | ❌ | Send password reset email |
+| POST | `/api/v1/auth/reset-password` | ❌ | Reset with token |
+| DELETE | `/api/v1/auth/account` | ✅ | Permanently delete account |
 
 ### Benefits
 | Method | Path | Auth | Description |
@@ -439,6 +444,12 @@ cd backend  && npm run type-check
 - Google OAuth
 - Multi-step onboarding
 - Affiliate revenue tracking
+- Custom toast notification system (top-right, animated)
+- Full settings page — change password, edit profile, upgrade plan, delete account
+- Savings tracker with claim-marking + Recharts chart
+- Password reset via email token
+- JWT auto-refresh with session expiry redirect
+- SVG favicon + dynamic OG metadata
 
 ### v1.1 (Next)
 - [ ] Broadband social tariff dedicated checker

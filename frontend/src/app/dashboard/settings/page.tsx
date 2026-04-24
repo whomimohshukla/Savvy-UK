@@ -108,7 +108,7 @@ function EditProfileModal({ onClose }: { onClose: () => void }) {
     defaultValues: {
       name: user?.name || '',
       postcode: user?.postcode || '',
-      householdSize: (user as any)?.householdSize || 1,
+      householdSize: user?.householdSize || 1,
     },
   });
 
@@ -183,7 +183,7 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading]     = useState(false);
   const [showPass, setShowPass]   = useState(false);
 
-  const isGoogleUser = !(user as any)?.passwordHash;
+  const isGoogleUser = !!user?.googleId;
   const canDelete = isGoogleUser ? confirm === 'DELETE' : (password.length >= 8 && confirm === 'DELETE');
 
   const handleDelete = async () => {
@@ -347,8 +347,8 @@ export default function SettingsPage() {
           {[
             { label: 'Full name',       value: user?.name      || '—' },
             { label: 'Email',           value: user?.email     || '—' },
-            { label: 'Postcode',        value: (user as any)?.postcode || '—' },
-            { label: 'Household size',  value: (user as any)?.householdSize ? `${(user as any).householdSize} people` : '—' },
+            { label: 'Postcode',        value: user?.postcode || '—' },
+            { label: 'Household size',  value: user?.householdSize ? `${user.householdSize} people` : '—' },
             { label: 'Plan',            value: currentPlan },
           ].map((row, i, arr) => (
             <div key={row.label}

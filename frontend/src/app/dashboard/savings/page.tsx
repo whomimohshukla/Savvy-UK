@@ -32,10 +32,10 @@ export default function SavingsPage() {
   const handleClaim = async (id: string) => {
     try {
       await dashboardApi.markSavingClaimed(id);
-      toast({ title: 'Saving marked as claimed!', description: 'Great work — keep going.' });
+      toast({ variant: 'success', title: 'Saving marked as claimed!', description: 'Great work — keep going.' });
       refetch();
     } catch {
-      toast({ title: 'Could not update saving', variant: 'destructive' });
+      toast({ variant: 'error', title: 'Could not update saving', description: 'Please try again.' });
     }
   };
 

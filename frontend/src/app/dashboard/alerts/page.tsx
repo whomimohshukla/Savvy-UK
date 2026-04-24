@@ -47,7 +47,7 @@ export default function AlertsPage() {
 
   const handleMarkAllRead = async () => {
     await alertsApi.markAllRead();
-    toast({ title: 'All alerts marked as read' });
+    toast({ variant: 'success', title: 'All caught up!', description: 'All alerts have been marked as read.' });
     refetch();
   };
 
