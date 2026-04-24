@@ -4,6 +4,7 @@ import { AppError } from '../../utils/AppError';
 import { runBenefitsCheck } from '../../services/ai/benefitsAI.service';
 import { cacheGet, cacheSet, cacheDel, CacheKeys, CACHE_TTL } from '../../config/redis';
 import { AuthRequest } from '../../middleware/authenticate';
+import { logger } from '../../config/logger';
 
 // POST /api/v1/benefits/check
 export async function checkBenefits(req: AuthRequest, res: Response, next: NextFunction) {
@@ -66,6 +67,38 @@ export async function checkBenefits(req: AuthRequest, res: Response, next: NextF
 
     res.json({ success: true, data: { ...benefitsCheck, result } });
   } catch (error) {
+    if (error instanceof AppError) {
+      return next(error);
+    }
+
+    const message = error instanceof Error ? error.message : 'Benefits check failed';
+    const lowered = message.toLowerCase();
+    const status = typeof error === 'object' && error !== null && 'status' in error
+      ? (error as { status?: number }).status
+      : undefined;
+
+    logger.error('Benefits AI check failed', {
+      userId: req.userId,
+      status,
+      message,
+    });
+
+    if (status === 401 || status === 403 || lowered.includes('api key') || lowered.includes('permission') || lowered.includes('unauthorized') || lowered.includes('forbidden')) {
+      return next(new AppError('Benefits AI is not configured correctly. Check the backend AI API key and provider settings.', 503));
+    }
+
+    if (status === 404 || lowered.includes('model') && lowered.includes('not found')) {
+      return next(new AppError('Benefits AI model is unavailable. Check GEMINI_MODEL in backend/.env or switch provider.', 503));
+    }
+
+    if (status === 429 || lowered.includes('rate limit') || lowered.includes('quota') || lowered.includes('429') || lowered.includes('resource has been exhausted')) {
+      return next(new AppError('Benefits AI quota or rate limit was hit. Check your Gemini API usage, then try again.', 503));
+    }
+
+    if (lowered.includes('json') || lowered.includes('response')) {
+      return next(new AppError('Benefits AI returned an invalid response. Please try again.', 502));
+    }
+
     next(error);
   }
 }

@@ -5,7 +5,14 @@ import { analyzeBillWithAI } from '../../services/ai/billsAI.service';
 import { extractTextFromPDF } from '../../services/pdf/pdfParser.service';
 import { cacheDel, CacheKeys } from '../../config/redis';
 import { AuthRequest } from '../../middleware/authenticate';
-import { BillType } from '@prisma/client';
+import { AlertType, BillType } from '@prisma/client';
+import { logger } from '../../config/logger';
+
+function getAlertTypeForBill(type: BillType): AlertType | null {
+  if (type === 'ENERGY') return 'ENERGY_SAVING';
+  if (type === 'BROADBAND') return 'BROADBAND_SAVING';
+  return null;
+}
 
 // POST /api/v1/bills/upload
 export async function uploadBill(req: AuthRequest, res: Response, next: NextFunction) {
@@ -42,17 +49,21 @@ export async function uploadBill(req: AuthRequest, res: Response, next: NextFunc
 
     // Create alert if saving found
     if (analysis.potentialSaving && analysis.potentialSaving > 0) {
-      await prisma.alert.create({
-        data: {
-          userId,
-          type: type === 'ENERGY' ? 'ENERGY_SAVING' : 'BROADBAND_SAVING',
-          title: `Save £${Math.round(analysis.potentialSaving)}/year on your ${type.toLowerCase()} bill`,
-          message: analysis.narrative,
-          valueAmount: analysis.potentialSaving,
-          actionUrl: analysis.affiliateUrl,
-          actionLabel: 'See best deals',
-        },
-      });
+      const alertType = getAlertTypeForBill(type as BillType);
+
+      if (alertType) {
+        await prisma.alert.create({
+          data: {
+            userId,
+            type: alertType,
+            title: `Save £${Math.round(analysis.potentialSaving)}/year on your ${type.toLowerCase()} bill`,
+            message: analysis.narrative,
+            valueAmount: analysis.potentialSaving,
+            actionUrl: analysis.affiliateUrl,
+            actionLabel: 'See best deals',
+          },
+        });
+      }
 
       await prisma.savingsRecord.create({
         data: {
@@ -68,6 +79,17 @@ export async function uploadBill(req: AuthRequest, res: Response, next: NextFunc
 
     res.status(201).json({ success: true, data: bill });
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Bill upload failed';
+
+    logger.error('Bill upload failed', {
+      userId: req.userId,
+      message,
+    });
+
+    if (message.toLowerCase().includes('pdf') || message.toLowerCase().includes('extract')) {
+      return next(new AppError(message, 400));
+    }
+
     next(error);
   }
 }

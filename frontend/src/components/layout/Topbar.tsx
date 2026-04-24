@@ -27,7 +27,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const meta = PAGE_META[pathname] ?? { title: 'Dashboard', description: '' };
   const initial = (user?.name?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase();
   const { data: alertsData } = useApi(() => alertsApi.getAlerts('unread') as any);
-  const unreadCount = (alertsData as any)?.data?.length ?? 0;
+  const unreadCount = (alertsData as any)?.data?.unreadCount ?? 0;
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-emerald-100 bg-white px-4 lg:px-8">

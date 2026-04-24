@@ -20,7 +20,7 @@ export function useApi<T>(fetchFn: () => Promise<{ data: T; success: boolean }>,
     setError(null);
     try {
       const res = await fetchFn();
-      setData(res.data);
+      setData(res as unknown as T);
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);

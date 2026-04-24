@@ -13,7 +13,11 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
-  ANTHROPIC_API_KEY: z.string().startsWith('sk-ant-', 'Invalid Anthropic API key'),
+  // AI Provider — use 'gemini' (free) or 'claude' (paid, high quality)
+  AI_PROVIDER: z.enum(['gemini', 'claude']).default('gemini'),
+  ANTHROPIC_API_KEY: z.string().startsWith('sk-ant-').optional(),
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
 
   // Google OAuth
   GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required for Google login'),
@@ -24,6 +28,12 @@ const envSchema = z.object({
 
   DODO_API_KEY: z.string().optional(),
   DODO_WEBHOOK_SECRET: z.string().optional(),
+
+  // Stripe Payments
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  STRIPE_PRO_PRICE_ID: z.string().optional(),
+  STRIPE_PREMIUM_PRICE_ID: z.string().optional(),
 
   PLAN_FREE_PRICE: z.coerce.number().default(0),
   PLAN_PRO_PRICE: z.coerce.number().default(499),
@@ -51,5 +61,17 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const env = parsed.data;
+const data = parsed.data;
+
+if (data.AI_PROVIDER === 'claude' && !data.ANTHROPIC_API_KEY) {
+  console.error('❌ ANTHROPIC_API_KEY is required when AI_PROVIDER=claude');
+  process.exit(1);
+}
+if (data.AI_PROVIDER === 'gemini' && !data.GEMINI_API_KEY) {
+  console.error('❌ GEMINI_API_KEY is required when AI_PROVIDER=gemini');
+  console.error('   Get a free key at: https://aistudio.google.com/app/apikey');
+  process.exit(1);
+}
+
+export const env = data;
 export type Env = typeof env;

@@ -1,0 +1,96 @@
+version: '3.9'
+
+# ── Local full-stack development ─────────────────────────────────────────────
+# Usage:
+#   docker compose up          # start everything
+#   docker compose up backend  # start backend + its deps only
+#
+# Services:
+#   postgres  — PostgreSQL 16 (port 5432)
+#   redis     — Redis 7       (port 6379)
+#   backend   — Express API   (port 5000)
+#   frontend  — Next.js       (port 3000)  ← optional, use `npm run dev` locally instead
+
+services:
+  # ── Database ─────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: savvy
+      POSTGRES_PASSWORD: savvy_dev
+      POSTGRES_DB: savvyuk
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U savvy -d savvyuk']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Cache ─────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend API ───────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://savvy:savvy_dev@postgres:5432/savvyuk?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:5000/health || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ── Frontend (Next.js) ────────────────────────────────────────────────────────
+  # Tip: for development, run `npm run dev` in ./frontend directly.
+  # This container is for integration testing or staging.
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:5000
+      NODE_ENV: production
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles:
+      - full   # only starts with: docker compose --profile full up
+
+volumes:
+  postgres_data:
+  redis_data:

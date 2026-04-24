@@ -315,28 +315,32 @@ model SavingsRecord {
 }
 
 // ============================================
-// SUBSCRIPTIONS — Dodo Payments
+// SUBSCRIPTIONS — Dodo Payments or Stripe
 // ============================================
 
 model Subscription {
   id                  String             @id @default(cuid())
   userId              String             @unique
-  
+
   // Dodo Payments data
   dodoCustomerId      String?
   dodoSubscriptionId  String?            @unique
-  
+
+  // Stripe data
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?          @unique
+
   plan                Plan
   status              SubscriptionStatus @default(ACTIVE)
   priceGbp            Float
-  
+
   currentPeriodStart  DateTime?
   currentPeriodEnd    DateTime?
   cancelledAt         DateTime?
-  
+
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
-  
+
   user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")

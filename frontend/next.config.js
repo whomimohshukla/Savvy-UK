@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone', // enables Docker slim build
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.amazonaws.com' },

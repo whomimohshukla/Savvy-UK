@@ -4,16 +4,28 @@ import { AppError } from '../../utils/AppError';
 import { cacheDel, CacheKeys } from '../../config/redis';
 import { AuthRequest } from '../../middleware/authenticate';
 
+function parseAlertStatus(status: unknown): 'UNREAD' | 'READ' | 'DISMISSED' | undefined {
+  if (typeof status !== 'string' || !status.trim()) return undefined;
+
+  const normalized = status.trim().toUpperCase();
+  if (normalized === 'UNREAD' || normalized === 'READ' || normalized === 'DISMISSED') {
+    return normalized;
+  }
+
+  throw new AppError('Invalid alert status filter', 400);
+}
+
 // GET /api/v1/alerts
 export async function getAlerts(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const userId = req.userId!;
     const { status, limit = '20', offset = '0' } = req.query;
+    const parsedStatus = parseAlertStatus(status);
 
     const alerts = await prisma.alert.findMany({
       where: {
         userId,
-        ...(status ? { status: status as any } : {}),
+        ...(parsedStatus ? { status: parsedStatus } : {}),
       },
       orderBy: { createdAt: 'desc' },
       take: parseInt(limit as string),

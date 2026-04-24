@@ -1,9 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { env } from '../../config/env';
+import { callAI, extractJSON } from './aiProvider';
 import { logger } from '../../config/logger';
 import { getAffiliateUrl } from '../affiliates/affiliate.service';
-
-const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
 interface EnergyScanInput {
   userId: string;
@@ -72,44 +69,30 @@ export async function runEnergyScan(input: EnergyScanInput): Promise<EnergyScanR
     `Postcode area: ${input.postcode.substring(0, 4)}`,
   ].filter(Boolean).join('\n');
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2048,
-    system: ENERGY_SYSTEM_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: `Find the best energy deals for this household:\n${userContext || 'Average UK household, no specific details provided'}`,
-      },
-    ],
+  const result = await callAI({
+    systemPrompt: ENERGY_SYSTEM_PROMPT,
+    cacheSystem: true,
+    userMessage: `Find the best energy deals for this household:\n${userContext || 'Average UK household, no specific details provided'}`,
+    maxTokens: 2048,
   });
 
-  const content = message.content[0];
-  if (content.type !== 'text') throw new Error('Unexpected response type');
+  const parsed = extractJSON<any>(result.text);
+  logger.info(`Energy scan complete [${result.provider}]`);
 
-  try {
-    const jsonMatch = content.text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON in response');
-    const parsed = JSON.parse(jsonMatch[0]);
+  const affiliateUrl = await getAffiliateUrl(
+    parsed.affiliateProvider || 'energy_shop',
+    input.userId
+  );
 
-    const affiliateUrl = await getAffiliateUrl(
-      parsed.affiliateProvider || 'energy_shop',
-      input.userId
-    );
-
-    return {
-      currentAnnualCost: parsed.currentAnnualCost ?? null,
-      bestDeal: parsed.bestDeal ?? null,
-      potentialSaving: parsed.potentialSaving ?? null,
-      affiliateUrl,
-      affiliateProvider: parsed.affiliateProvider ?? 'energy_shop',
-      warmHomeDiscount: parsed.warmHomeDiscount ?? false,
-      warmHomeDiscountVal: parsed.warmHomeDiscountVal ?? null,
-      recommendation: parsed.recommendation ?? '',
-      deals: parsed.deals ?? [],
-    };
-  } catch (err) {
-    logger.error('Failed to parse energy AI response');
-    throw new Error('Failed to analyse energy options');
-  }
+  return {
+    currentAnnualCost: parsed.currentAnnualCost ?? null,
+    bestDeal: parsed.bestDeal ?? null,
+    potentialSaving: parsed.potentialSaving ?? null,
+    affiliateUrl,
+    affiliateProvider: parsed.affiliateProvider ?? 'energy_shop',
+    warmHomeDiscount: parsed.warmHomeDiscount ?? false,
+    warmHomeDiscountVal: parsed.warmHomeDiscountVal ?? null,
+    recommendation: parsed.recommendation ?? '',
+    deals: parsed.deals ?? [],
+  };
 }

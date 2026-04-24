@@ -1,8 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { env } from '../../config/env';
+import { callAI, extractJSON } from './aiProvider';
 import { logger } from '../../config/logger';
-
-const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
 export interface BenefitResult {
   name: string;
@@ -80,36 +77,28 @@ export async function runBenefitsCheck(
 
   const userContext = buildUserContext(profile);
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 4096,
-    system: SYSTEM_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: `Please check what UK benefits and financial support this person may be entitled to:
+  try {
+    const result = await callAI({
+      systemPrompt: SYSTEM_PROMPT,
+      cacheSystem: true,
+      userMessage: `Please check what UK benefits and financial support this person may be entitled to:
 
 ${userContext}
 
 Analyse carefully and list every benefit they might qualify for but aren't already claiming. Be specific about annual values using current 2025/26 rates.`,
-      },
-    ],
-  });
+      maxTokens: 4096,
+    });
 
-  const content = message.content[0];
-  if (content.type !== 'text') {
-    throw new Error('Unexpected response type from Claude');
-  }
+    const parsed = extractJSON<BenefitsCheckResult>(result.text);
+    logger.info(`Benefits check complete [${result.provider}]: found ${parsed.benefits.length} benefits, £${parsed.totalValue} total`);
+    return parsed;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown AI error';
+    logger.warn(`AI benefits check failed, using rules fallback: ${message}`);
 
-  try {
-    const jsonMatch = content.text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON found in response');
-    const result = JSON.parse(jsonMatch[0]) as BenefitsCheckResult;
-    logger.info(`Benefits check complete: found ${result.benefits.length} benefits, £${result.totalValue} total`);
-    return result;
-  } catch (err) {
-    logger.error('Failed to parse benefits AI response:', content.text);
-    throw new Error('Failed to parse benefits analysis');
+    const fallback = runRulesBasedBenefitsCheck(profile);
+    logger.info(`Benefits check complete [fallback]: found ${fallback.benefits.length} benefits, £${fallback.totalValue} total`);
+    return fallback;
   }
 }
 
@@ -141,4 +130,179 @@ function buildUserContext(profile: Record<string, any>): string {
   if (profile.postcode) lines.push(`- Postcode area: ${profile.postcode.substring(0, 4)}`);
 
   return lines.join('\n') || 'No specific profile data provided — please give general guidance.';
+}
+
+function runRulesBasedBenefitsCheck(profile: Record<string, any>): BenefitsCheckResult {
+  const benefits: BenefitResult[] = [];
+  const alreadyClaiming: string[] = [];
+  const income = Number(profile.annualIncome || 0);
+  const childrenCount = Number(profile.childrenCount || 0);
+  const hasLowIncome = income > 0 && income <= 30000;
+  const hasVeryLowIncome = income > 0 && income <= 20000;
+
+  const addIfMissing = (current: unknown, benefit: BenefitResult, claimedName?: string) => {
+    if (current) {
+      if (claimedName) alreadyClaiming.push(claimedName);
+      return;
+    }
+    benefits.push(benefit);
+  };
+
+  addIfMissing(profile.claimsUniversalCredit, {
+    name: 'Universal Credit',
+    description: 'You may qualify for Universal Credit if your household income is modest, you are out of work, or your work income is low.',
+    annualValue: profile.hasChildren ? 7200 : 4800,
+    probability: hasVeryLowIncome || profile.isUnemployed ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/universal-credit',
+    claimSteps: [
+      'Check eligibility on GOV.UK using your household details',
+      'Start an online Universal Credit claim',
+      'Prepare income, rent, savings, and childcare information',
+    ],
+    category: 'income_support',
+  }, 'Universal Credit');
+
+  addIfMissing(profile.claimsChildBenefit, {
+    name: 'Child Benefit',
+    description: 'If you have dependent children, you may be entitled to Child Benefit even if other benefits are not in payment.',
+    annualValue: childrenCount > 1 ? 1331.2 + (childrenCount - 1) * 881.4 : 1331.2,
+    probability: profile.hasChildren ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/child-benefit',
+    claimSteps: [
+      'Check whether you already have an open Child Benefit claim',
+      'Apply online or by post through HMRC',
+      'Provide child details and your National Insurance number',
+    ],
+    category: 'childcare',
+  }, 'Child Benefit');
+
+  addIfMissing(profile.claimsPensionCredit, {
+    name: 'Pension Credit',
+    description: 'Pension Credit can top up income in retirement and can unlock other support such as council tax help and warm home discounts.',
+    annualValue: 3900,
+    probability: profile.isPensioner && hasLowIncome ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/pension-credit',
+    claimSteps: [
+      'Gather pension, savings, and housing cost details',
+      'Check eligibility on GOV.UK or by phone',
+      'Submit a Pension Credit claim',
+    ],
+    category: 'income_support',
+  }, 'Pension Credit');
+
+  addIfMissing(profile.claimsPIP, {
+    name: 'Personal Independence Payment (PIP)',
+    description: 'If you or someone in your household has a long-term condition or disability, PIP may help with daily living or mobility costs.',
+    annualValue: 3800,
+    probability: profile.hasDisabledMember ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/pip',
+    claimSteps: [
+      'Review the daily living and mobility criteria',
+      'Start a new claim with the DWP',
+      'Complete the assessment form with examples of day-to-day impact',
+    ],
+    category: 'disability',
+  }, 'PIP');
+
+  addIfMissing(profile.claimsCarersAllowance, {
+    name: "Carer's Allowance",
+    description: 'If you provide regular unpaid care for someone with a disability benefit, Carer’s Allowance may be available.',
+    annualValue: 4258.8,
+    probability: profile.hasCarerInHousehold ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/carers-allowance',
+    claimSteps: [
+      'Confirm the cared-for person receives a qualifying disability benefit',
+      'Check weekly caring hours and earnings rules',
+      'Complete the Carer’s Allowance claim online',
+    ],
+    category: 'income_support',
+  }, "Carer's Allowance");
+
+  addIfMissing(profile.claimsHousingBenefit, {
+    name: 'Housing Benefit or Local Housing Support',
+    description: 'Renters on a lower income may qualify for housing support through Housing Benefit or the housing element of Universal Credit.',
+    annualValue: 1800,
+    probability: (profile.privateTenant || profile.socialHousingTenant) && hasLowIncome ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/housing-benefit',
+    claimSteps: [
+      'Check whether your council still accepts Housing Benefit claims',
+      'Review whether Universal Credit housing support is the right route',
+      'Prepare tenancy and rent evidence before applying',
+    ],
+    category: 'housing',
+  }, 'Housing Benefit');
+
+  addIfMissing(profile.claimsCouncilTaxReduction, {
+    name: 'Council Tax Reduction',
+    description: 'Many local councils offer council tax support for households on lower incomes, including pensioners and families.',
+    annualValue: 1200,
+    probability: hasLowIncome || profile.isPensioner ? 'HIGH' : 'MEDIUM',
+    claimUrl: 'https://www.gov.uk/apply-council-tax-reduction',
+    claimSteps: [
+      'Find your local council’s council tax support page',
+      'Check your income, household, and savings against local rules',
+      'Submit your claim with proof of address and income',
+    ],
+    category: 'housing',
+  }, 'Council Tax Reduction');
+
+  if (profile.onPrepayMeter || hasLowIncome || profile.claimsUniversalCredit || profile.claimsPensionCredit) {
+    benefits.push({
+      name: 'Warm Home Discount',
+      description: 'Households on lower incomes or certain benefits may qualify for a one-off energy bill discount, especially if using a prepayment meter.',
+      annualValue: 150,
+      probability: hasLowIncome || profile.onPrepayMeter ? 'HIGH' : 'MEDIUM',
+      claimUrl: 'https://www.gov.uk/the-warm-home-discount-scheme',
+      claimSteps: [
+        'Check whether your supplier participates in the scheme',
+        'Confirm whether you qualify automatically or need to apply',
+        'Apply or wait for the discount to be credited to your bill',
+      ],
+      category: 'energy',
+    });
+  }
+
+  if (hasLowIncome || profile.claimsUniversalCredit || profile.claimsPensionCredit) {
+    benefits.push({
+      name: 'Broadband Social Tariff',
+      description: 'If your household is on a low income or certain benefits, a cheaper broadband tariff may be available from your provider.',
+      annualValue: 180,
+      probability: 'HIGH',
+      claimUrl: 'https://www.ofcom.org.uk/phones-and-broadband/saving-money/social-tariffs',
+      claimSteps: [
+        'Check whether your current broadband provider offers a social tariff',
+        'Compare social tariff prices and speeds',
+        'Contact the provider to switch without leaving your contract if eligible',
+      ],
+      category: 'energy',
+    });
+  }
+
+  const dedupedBenefits = dedupeBenefits(benefits).filter((benefit) => benefit.probability !== 'LOW');
+  const totalValue = dedupedBenefits.reduce((sum, benefit) => sum + benefit.annualValue, 0);
+  const summary = dedupedBenefits.length > 0
+    ? `We found ${dedupedBenefits.length} support option${dedupedBenefits.length === 1 ? '' : 's'} using Savvy UK's built-in eligibility rules. These results are conservative and based on the details you entered.`
+    : 'No clear unclaimed benefits were identified from the answers provided, but a fuller check may still find local or situation-specific support.';
+
+  return {
+    benefits: dedupedBenefits,
+    alreadyClaiming: Array.from(new Set(alreadyClaiming)),
+    totalValue,
+    summary,
+    confidence: dedupedBenefits.length > 0 ? 0.68 : 0.55,
+  };
+}
+
+function dedupeBenefits(benefits: BenefitResult[]): BenefitResult[] {
+  const seen = new Set<string>();
+  const deduped: BenefitResult[] = [];
+
+  for (const benefit of benefits) {
+    const key = benefit.name.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(benefit);
+  }
+
+  return deduped;
 }

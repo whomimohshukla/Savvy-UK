@@ -178,7 +178,10 @@ export const energyApi = {
 };
 
 export const alertsApi = {
-  getAlerts: (status?: string) => api.get(`/api/v1/alerts${status ? `?status=${status}` : ''}`),
+  getAlerts: (status?: string) => {
+    const normalizedStatus = status?.trim().toUpperCase();
+    return api.get(`/api/v1/alerts${normalizedStatus ? `?status=${normalizedStatus}` : ''}`);
+  },
   markRead: (id: string) => api.patch(`/api/v1/alerts/${id}/read`),
   markAllRead: () => api.patch('/api/v1/alerts/read-all'),
   dismiss: (id: string) => api.delete(`/api/v1/alerts/${id}`),
