@@ -8,7 +8,7 @@ import { Eye, EyeOff, ArrowRight, PoundSterling, TrendingUp, Shield, ArrowLeft }
 import { authApi } from '@/lib/api/client';
 import { useAuthStore, isOnboardingDone } from '@/lib/store/auth.store';
 import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton';
-import { Alert, PageLoader } from '@/components/ui/index';
+import { PageLoader } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 interface LoginForm { email: string; password: string; }
@@ -23,29 +23,22 @@ export default function LoginPage() {
   const router      = useRouter();
   const setAuth     = useAuthStore((s) => s.setAuth);
   const [showPass, setShowPass]       = useState(false);
-  const [error, setError]             = useState('');
   const [redirecting, setRedirecting] = useState(false);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
 
   const onSubmit = async (data: LoginForm) => {
-    setError('');
     try {
       const res = await authApi.login(data) as any;
       const serverUser = res.data.user;
-
-      // Merge server response with persistent local flag.
-      // The server login endpoint may not always return onboardingDone: true even
-      // after the user completed onboarding — we keep a local record as fallback.
       const onboardingComplete = serverUser.onboardingDone || isOnboardingDone(serverUser.email);
       const mergedUser = { ...serverUser, onboardingDone: onboardingComplete };
-
       setAuth(mergedUser, res.data.accessToken, res.data.refreshToken);
-      toast({ title: `Welcome back, ${mergedUser.name?.split(' ')[0] || 'there'}!`, description: 'Signed in successfully.' });
+      toast({ variant: 'success', title: `Welcome back, ${mergedUser.name?.split(' ')[0] || 'there'}!`, description: 'Signed in successfully.' });
       setRedirecting(true);
       router.push(onboardingComplete ? '/dashboard' : '/onboarding');
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+      toast({ variant: 'error', title: 'Sign in failed', description: err.message || 'Invalid email or password. Please try again.' });
     }
   };
 
@@ -111,10 +104,8 @@ export default function LoginPage() {
             <p className="mt-2 text-green-600">Log in to your savings dashboard</p>
           </div>
 
-          {error && <Alert variant="error" className="mb-6">{error}</Alert>}
-
           <div className="mb-5">
-            <GoogleSignInButton onError={setError} />
+            <GoogleSignInButton onError={(msg) => toast({ variant: 'error', title: 'Sign in failed', description: msg })} />
           </div>
 
           <div className="relative mb-5">
