@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/utils/cn';
 import { BenefitCard, Benefit } from '@/components/benefits/BenefitCard';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/FormFields';
-import { Alert } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 interface BenefitsForm {
   hasChildren: boolean; childrenCount: number;
@@ -26,7 +26,6 @@ interface BenefitsForm {
 export default function BenefitsPage() {
   const [step, setStep] = useState<'form' | 'loading' | 'results'>('form');
   const [results, setResults] = useState<any>(null);
-  const [error, setError] = useState('');
 
   const { register, handleSubmit, watch } = useForm<BenefitsForm>({
     defaultValues: { childrenCount: 1 },
@@ -35,13 +34,12 @@ export default function BenefitsPage() {
 
   const onSubmit = async (data: BenefitsForm) => {
     setStep('loading');
-    setError('');
     try {
       const res = await benefitsApi.check(data) as any;
       setResults(res.data);
       setStep('results');
     } catch (err: any) {
-      setError(err.message || 'Check failed. Please try again.');
+      toast({ variant: 'error', title: 'Check failed', description: err.message || 'Please try again.' });
       setStep('form');
     }
   };
@@ -84,8 +82,6 @@ export default function BenefitsPage() {
           Answer these questions and our AI will find every benefit you're entitled to but not claiming.
         </p>
       </div>
-
-      {error && <Alert variant="error">{error}</Alert>}
 
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 flex items-start gap-3">
         <div className="text-xl mt-0.5">💡</div>
