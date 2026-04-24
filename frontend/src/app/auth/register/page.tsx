@@ -8,7 +8,7 @@ import { Eye, EyeOff, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { authApi } from '@/lib/api/client';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton';
-import { Alert, PageLoader } from '@/components/ui/index';
+import { PageLoader } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 interface RegisterForm {
@@ -29,21 +29,19 @@ export default function RegisterPage() {
   const router      = useRouter();
   const setAuth     = useAuthStore((s) => s.setAuth);
   const [showPass, setShowPass]       = useState(false);
-  const [error, setError]             = useState('');
   const [redirecting, setRedirecting] = useState(false);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>();
 
   const onSubmit = async (data: RegisterForm) => {
-    setError('');
     try {
       const res = await authApi.register(data) as any;
       setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
-      toast({ title: 'Account created!', description: 'Welcome to Savvy UK.' });
+      toast({ variant: 'success', title: 'Account created!', description: 'Welcome to Savvy UK.' });
       setRedirecting(true);
       router.push('/onboarding');
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
+      toast({ variant: 'error', title: 'Registration failed', description: err.message || 'Please try again.' });
     }
   };
 
@@ -112,10 +110,8 @@ export default function RegisterPage() {
             <p className="mt-2 text-green-600">Free forever — start finding savings today</p>
           </div>
 
-          {error && <Alert variant="error" className="mb-6">{error}</Alert>}
-
           <div className="mb-5">
-            <GoogleSignInButton onError={setError} redirectTo="/onboarding" />
+            <GoogleSignInButton onError={(msg) => toast({ variant: 'error', title: 'Sign up failed', description: msg })} redirectTo="/onboarding" />
           </div>
 
           <div className="relative mb-5">
