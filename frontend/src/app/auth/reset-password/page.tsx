@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, CheckCircle2, ArrowRight, ShieldAlert } from 'lucide-react';
 import { authApi } from '@/lib/api/client';
-import { Alert, PageLoader } from '@/components/ui/index';
+import { PageLoader } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 interface ResetForm { password: string; confirmPassword: string; }
@@ -18,29 +18,27 @@ function ResetPasswordContent() {
 
   const [showPass, setShowPass]       = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError]             = useState('');
   const [success, setSuccess]         = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ResetForm>();
 
   useEffect(() => {
-    if (!token) setError('Invalid or missing reset token. Please request a new link.');
+    if (!token) toast({ variant: 'error', title: 'Invalid reset link', description: 'Please request a new password reset link.' });
   }, [token]);
 
   const onSubmit = async (data: ResetForm) => {
     if (!token) return;
-    setError('');
     try {
       await authApi.resetPassword(token, data.password);
       setSuccess(true);
-      toast({ title: 'Password reset!', description: 'You can now sign in with your new password.' });
+      toast({ variant: 'success', title: 'Password reset!', description: 'You can now sign in with your new password.' });
       setTimeout(() => {
         setRedirecting(true);
         router.push('/auth');
       }, 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to reset password. Please request a new link.');
+      toast({ variant: 'error', title: 'Reset failed', description: err.message || 'Please request a new link.' });
     }
   };
 
@@ -100,8 +98,6 @@ function ResetPasswordContent() {
                 Choose a strong password you haven&apos;t used before.
               </p>
             </div>
-
-            {error && <Alert variant="error" className="mb-5">{error}</Alert>}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
