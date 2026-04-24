@@ -15,13 +15,13 @@ interface StatCardProps {
 }
 
 export function StatCard({
-  label, value, subvalue, icon, iconBg = 'bg-slate-100',
+  label, value, subvalue, icon, iconBg = 'bg-emerald-100',
   href, trend, highlight, className,
 }: StatCardProps) {
   const Inner = () => (
     <div className={cn(
       'card p-5 transition-all duration-200',
-      href && 'hover:shadow-card-hover hover:-translate-y-1 cursor-pointer group',
+      href && 'hover:shadow-lg hover:-translate-y-1 cursor-pointer group',
       highlight && 'border-emerald-200 bg-emerald-50',
       className,
     )}>
@@ -30,21 +30,21 @@ export function StatCard({
           {icon}
         </div>
         {href && (
-          <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+          <ArrowUpRight className="h-4 w-4 text-green-300 group-hover:text-emerald-500 transition-colors" />
         )}
       </div>
       <div className="space-y-0.5">
-        <p className={cn('text-2xl font-bold tabular-nums tracking-tight', highlight ? 'text-emerald-600' : 'text-slate-900')}>
+        <p className={cn('text-2xl font-bold tabular-nums tracking-tight', highlight ? 'text-emerald-600' : 'text-green-950')}>
           {value}
         </p>
-        {subvalue && <p className="text-xs text-slate-400 font-medium">{subvalue}</p>}
-        <p className="text-sm text-slate-500 font-medium">{label}</p>
+        {subvalue && <p className="text-xs text-green-400 font-medium">{subvalue}</p>}
+        <p className="text-sm text-green-600 font-medium">{label}</p>
       </div>
       {trend && (
-        <div className="mt-3 flex items-center gap-1.5 pt-3 border-t border-slate-50">
+        <div className="mt-3 flex items-center gap-1.5 pt-3 border-t border-emerald-50">
           <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
           <span className="text-xs text-emerald-600 font-semibold">+{trend.value}%</span>
-          <span className="text-xs text-slate-400">{trend.label}</span>
+          <span className="text-xs text-green-400">{trend.label}</span>
         </div>
       )}
     </div>
