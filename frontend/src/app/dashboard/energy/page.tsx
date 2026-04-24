@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Zap, Loader2, ExternalLink, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Zap, ExternalLink, TrendingDown, Info } from 'lucide-react';
 import { energyApi } from '@/lib/api/client';
 import { formatCurrency } from '@/lib/utils/cn';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { EnergyDealCard } from '@/components/energy/EnergyDealCard';
 import { Button } from '@/components/ui/Button';
-import { Alert, Card, CardHeader, CardBody } from '@/components/ui/index';
+import { Card, CardHeader, CardBody } from '@/components/ui/index';
+import { toast } from '@/lib/store/toast.store';
 
 interface EnergyForm {
   currentSupplier: string;
@@ -21,19 +22,18 @@ export default function EnergyPage() {
   const user = useAuthStore((s) => s.user);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState('');
 
   const { register, handleSubmit, formState: { errors } } = useForm<EnergyForm>({
     defaultValues: { postcode: user?.postcode || '' },
   });
 
   const onSubmit = async (data: EnergyForm) => {
-    setLoading(true); setError('');
+    setLoading(true);
     try {
       const res = await energyApi.scan(data) as any;
       setResult(res.data);
     } catch (err: any) {
-      setError(err.message || 'Scan failed. Please try again.');
+      toast({ variant: 'error', title: 'Scan failed', description: err.message || 'Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -49,17 +49,17 @@ export default function EnergyPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Zap className="h-6 w-6 text-amber-500" />
+        <h2 className="text-2xl font-bold text-green-950 flex items-center gap-2">
+          <Zap className="h-6 w-6 text-emerald-500" />
           Energy Comparison
         </h2>
-        <p className="text-slate-500 text-sm mt-1">Find the cheapest energy deal for your home in under a minute</p>
+        <p className="text-green-600 text-sm mt-1">Find the cheapest energy deal for your home in under a minute</p>
       </div>
 
       {/* Price cap info */}
-      <div className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
-        <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-amber-800">
+      <div className="flex items-start gap-3 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3">
+        <Info className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-emerald-800">
           <strong>Energy prices rising in 2026.</strong> The Ofgem price cap is £1,849/year.
           Switching to a fixed deal now could lock in lower rates and save you £200–£400/year.
         </p>
@@ -80,7 +80,7 @@ export default function EnergyPage() {
                 <input className="form-input" placeholder="e.g. Standard Variable" {...register('currentTariff')} />
               </div>
               <div>
-                <label className="form-label">Annual usage (kWh) <span className="text-xs text-slate-400">optional</span></label>
+                <label className="form-label">Annual usage (kWh) <span className="text-xs text-green-400">optional</span></label>
                 <input type="number" className="form-input" placeholder="~3100 for average home" {...register('annualUsageKwh', { valueAsNumber: true })} />
               </div>
               <div>
@@ -93,8 +93,6 @@ export default function EnergyPage() {
                 {errors.postcode && <p className="form-error">{errors.postcode.message}</p>}
               </div>
             </div>
-
-            {error && <Alert variant="error">{error}</Alert>}
 
             <Button type="submit" loading={loading} fullWidth size="lg">
               {!loading && <Zap className="h-4 w-4" />}
@@ -118,16 +116,16 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
     <div className="space-y-4 animate-fade-up">
       {/* Saving hero */}
       {res.potentialSaving > 0 && (
-        <div className="rounded-2xl bg-amber-500 p-6 text-white">
+        <div className="rounded-2xl bg-emerald-600 p-6 text-white">
           <div className="flex items-center gap-2 mb-1">
-            <TrendingDown className="h-5 w-5 text-orange-200" />
-            <p className="text-orange-100 text-sm font-medium">You could save</p>
+            <TrendingDown className="h-5 w-5 text-emerald-200" />
+            <p className="text-emerald-100 text-sm font-medium">You could save</p>
           </div>
           <p className="text-5xl font-extrabold mb-1">
             {formatCurrency(res.potentialSaving)}
-            <span className="text-2xl font-normal text-orange-200">/year</span>
+            <span className="text-2xl font-normal text-emerald-200">/year</span>
           </p>
-          <p className="text-orange-100 text-sm">
+          <p className="text-emerald-100 text-sm">
             by switching from your current supplier to <strong className="text-white">{res.bestDeal?.supplier}</strong>
           </p>
         </div>
@@ -138,12 +136,12 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
         <Card>
           <CardBody>
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+              <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
                 <span className="text-sm">🤖</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900 mb-1">AI Recommendation</p>
-                <p className="text-sm text-slate-600 leading-relaxed">{res.recommendation}</p>
+                <p className="text-sm font-semibold text-green-900 mb-1">AI Recommendation</p>
+                <p className="text-sm text-green-700 leading-relaxed">{res.recommendation}</p>
               </div>
             </div>
           </CardBody>
@@ -152,15 +150,15 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
 
       {/* Warm Home Discount */}
       {res.warmHomeDiscount && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 flex items-start gap-3">
           <span className="text-xl">🏠</span>
           <div>
-            <p className="font-semibold text-amber-900 text-sm">Warm Home Discount — £150</p>
-            <p className="text-xs text-amber-700 mt-0.5">
+            <p className="font-semibold text-emerald-900 text-sm">Warm Home Discount — £150</p>
+            <p className="text-xs text-emerald-700 mt-0.5">
               You may qualify for a £150 one-off energy bill discount. Apply through your supplier.
             </p>
             <a href="https://www.gov.uk/the-warm-home-discount-scheme" target="_blank" rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:underline">
+              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline">
               Check eligibility <ExternalLink className="h-3 w-3" />
             </a>
           </div>
@@ -181,7 +179,7 @@ function EnergyResults({ data, onSwitch }: { data: any; onSwitch: (p: string) =>
                 onSwitch={() => onSwitch(res.affiliateProvider || 'energy_shop')}
               />
             ))}
-            <p className="text-xs text-slate-400 text-center pt-2">
+            <p className="text-xs text-green-400 text-center pt-2">
               We may earn a commission if you switch — you pay nothing extra.
             </p>
           </CardBody>
