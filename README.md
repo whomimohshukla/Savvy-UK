@@ -1,4 +1,4 @@
-# 🇬🇧 Savvy UK — AI Bill & Benefits Checker
+# 🇬🇧 ClaimWise UK — AI Bill & Benefits Checker
 
 > **The AI-powered tool that finds every penny of unclaimed UK benefits and bill savings.**
 > Built for Indian developers targeting UK customers. No UK company needed. Earns in £GBP.
@@ -83,7 +83,7 @@
 ## 📁 Project Structure
 
 ```
-savvy-uk/
+claimwise-uk/
 ├── package.json                    # Root workspace
 ├── README.md
 ├── docs/
@@ -189,7 +189,7 @@ savvy-uk/
 
 ```bash
 git clone <your-repo>
-cd savvy-uk
+cd claimwise-uk
 npm install
 ```
 
@@ -238,7 +238,7 @@ npm run dev       # starts both on :3000 and :5000
 ```
 
 ### Demo login
-- **Email:** `demo@savvy-uk.com`
+- **Email:** `demo@claimwise.co.uk`
 - **Password:** `Password123!`
 
 ---
@@ -349,29 +349,231 @@ Add affiliate IDs to `backend/.env` — revenue tracking is automatic.
 
 ---
 
-## 🚢 Deployment
+## 🚢 Deployment (100% Free)
 
-### Backend → Railway
-```bash
-npm install -g @railway/cli
-railway login && railway init && railway up
-```
-Set env vars in Railway dashboard. Add Neon DATABASE_URL and Upstash REDIS_URL.
+> **Free stack:** Frontend → Vercel (free) · Backend → AWS EC2 t2.micro (12 months free) · DB → Neon (free) · Cache → Upstash (free)
 
-### Frontend → Vercel
+---
+
+### 🌐 FRONTEND — Vercel (Free Forever)
+
+Vercel is the official Next.js host. Free plan = unlimited personal projects, custom domain, HTTPS.
+
+#### Step 1 — Push your code to GitHub
 ```bash
-cd frontend && npx vercel
+git init
+git add .
+git commit -m "initial commit"
+# Create repo on github.com, then:
+git remote add origin https://github.com/YOUR_USERNAME/claimwise-uk.git
+git push -u origin main
 ```
-Set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_GOOGLE_CLIENT_ID`.
+
+#### Step 2 — Deploy to Vercel
+1. Go to **vercel.com** → Sign up with GitHub (free)
+2. Click **"Add New Project"** → Import your GitHub repo
+3. Set **Root Directory** → `frontend`
+4. Framework: Next.js (auto-detected)
+5. Click **"Environment Variables"** and add:
+   ```
+   NEXT_PUBLIC_API_URL=https://YOUR_EC2_IP_OR_DOMAIN:5000
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+   ```
+6. Click **Deploy** → your site is live at `your-project.vercel.app`
+
+#### Step 3 — Custom domain (optional, free)
+- In Vercel project → Settings → Domains → Add `claimwise.co.uk`
+- Update your domain DNS with the CNAME Vercel gives you
+
+---
+
+### ☁️ BACKEND — AWS EC2 Free Tier (12 months free)
+
+AWS free tier gives you **750 hours/month** of t2.micro — enough to run your backend 24/7 for a year.
+
+#### Step 1 — Create AWS Account
+1. Go to **aws.amazon.com** → Create account (requires credit card but won't charge for free tier)
+2. Choose **t2.micro** always — it's free. Avoid anything else.
+
+#### Step 2 — Launch EC2 Instance
+1. AWS Console → **EC2** → **Launch Instance**
+2. Name: `claimwise-backend`
+3. AMI: **Ubuntu Server 22.04 LTS** (free tier eligible)
+4. Instance type: **t2.micro** (free tier) ← IMPORTANT
+5. Key pair: Create new → name it `claimwise-key` → Download `.pem` file (keep it safe!)
+6. Network settings → **Edit** → Add these inbound rules:
+   - SSH: Port 22, Source: My IP
+   - Custom TCP: Port 5000, Source: 0.0.0.0/0
+   - HTTP: Port 80, Source: 0.0.0.0/0
+   - HTTPS: Port 443, Source: 0.0.0.0/0
+7. Storage: 8 GB gp2 (free tier)
+8. Click **Launch Instance**
+
+#### Step 3 — Connect to your EC2 instance
+```bash
+# On your local machine:
+chmod 400 ~/Downloads/claimwise-key.pem
+ssh -i ~/Downloads/claimwise-key.pem ubuntu@YOUR_EC2_PUBLIC_IP
+```
+
+#### Step 4 — Install Node.js 20 + PM2 on EC2
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Node.js 20 (LTS)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Verify
+node --version   # Should be v20.x.x
+npm --version
+
+# Install PM2 (keeps your app running forever)
+sudo npm install -g pm2
+
+# Install git
+sudo apt install -y git
+```
+
+#### Step 5 — Clone and configure your app
+```bash
+# Clone your repo
+git clone https://github.com/YOUR_USERNAME/claimwise-uk.git
+cd claimwise-uk/backend
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env
+nano .env
+```
+
+Fill in your `.env` (press Ctrl+X, then Y to save in nano):
+```env
+NODE_ENV=production
+PORT=5000
+DATABASE_URL="postgresql://..."        # From neon.tech
+REDIS_URL="redis://..."                # From upstash.com
+JWT_SECRET="run: openssl rand -hex 32"
+JWT_REFRESH_SECRET="run: openssl rand -hex 32"
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+ANTHROPIC_API_KEY="sk-ant-..."
+GOOGLE_CLIENT_ID="xxx.apps.googleusercontent.com"
+FRONTEND_URL="https://your-project.vercel.app"
+DODO_API_KEY="..."
+DODO_WEBHOOK_SECRET="..."
+EMAIL_FROM="noreply@claimwise.co.uk"
+```
+
+#### Step 6 — Build and start with PM2
+```bash
+# Build TypeScript
+npm run build
+
+# Seed demo data (run once)
+npm run db:push
+npm run db:seed
+
+# Start with PM2 (auto-restarts on crash)
+pm2 start dist/index.js --name claimwise-api
+
+# Save PM2 config so it restarts on EC2 reboot
+pm2 save
+pm2 startup
+# Copy and run the command it prints (starts with "sudo env PATH=...")
+```
+
+#### Step 7 — Verify it's running
+```bash
+pm2 status          # Should show "claimwise-api" as "online"
+pm2 logs            # View live logs
+curl http://localhost:5000/health   # Should return OK
+```
+
+#### Step 8 — Update Vercel with your EC2 URL
+In Vercel → Project → Settings → Environment Variables:
+```
+NEXT_PUBLIC_API_URL=http://YOUR_EC2_PUBLIC_IP:5000
+```
+Redeploy on Vercel (push a commit or click Redeploy).
+
+#### Step 9 — (Optional but recommended) Free HTTPS with Nginx + Let's Encrypt
+Only do this if you have a domain. Skip if using IP directly.
+```bash
+sudo apt install -y nginx certbot python3-certbot-nginx
+
+# Create nginx config
+sudo nano /etc/nginx/sites-available/claimwise
+```
+Paste:
+```nginx
+server {
+    server_name api.claimwise.co.uk;
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+```bash
+sudo ln -s /etc/nginx/sites-available/claimwise /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl restart nginx
+
+# Free SSL cert
+sudo certbot --nginx -d api.claimwise.co.uk
+# Answer prompts — cert auto-renews every 90 days
+```
+
+---
+
+### 🔄 How to Deploy Updates
+
+```bash
+# On your local machine — push new code
+git add . && git commit -m "update" && git push
+
+# Frontend: Vercel auto-deploys on push (nothing to do!)
+
+# Backend: SSH into EC2 and pull
+ssh -i ~/Downloads/claimwise-key.pem ubuntu@YOUR_EC2_PUBLIC_IP
+cd claimwise-uk
+git pull
+cd backend && npm install && npm run build
+pm2 restart claimwise-api
+```
+
+---
+
+### 💰 Free Tier Cost Summary
+
+| Service | Free Tier | Limit |
+|---------|-----------|-------|
+| **Vercel** | Free forever | 100GB bandwidth/month |
+| **AWS EC2 t2.micro** | 750 hrs/month | **12 months only** |
+| **Neon PostgreSQL** | Free forever | 512 MB storage, 1 project |
+| **Upstash Redis** | Free forever | 10,000 commands/day |
+| **Total cost** | **£0/month** | For first 12 months |
+
+> ⚠️ After 12 months, EC2 charges ~$8-9/month. Alternatives: move to Railway ($5/mo) or Render (free with sleep).
+
+---
 
 ### Production checklist
-- [ ] `NODE_ENV=production` on Railway
-- [ ] Strong `JWT_SECRET` (32+ chars)
-- [ ] Update CORS origins in `backend/src/index.ts`
-- [ ] Register with [ICO](https://ico.org.uk/registration/new) (free, required)
-- [ ] Add domain to Google Console authorised origins
-- [ ] Set Dodo webhook URL in dashboard
-- [ ] Run `npm run db:migrate` (not just `db:push`)
+- [ ] `NODE_ENV=production` in EC2 `.env`
+- [ ] Strong `JWT_SECRET` (`openssl rand -hex 32`)
+- [ ] Update CORS origins in `backend/src/index.ts` to your Vercel domain
+- [ ] Register with [ICO](https://ico.org.uk/registration/new) (free, legally required)
+- [ ] Add Vercel domain to Google Console authorised origins
+- [ ] Set Dodo webhook URL: `https://YOUR_EC2/api/v1/subscription/webhook`
+- [ ] Run `npm run db:migrate` (not `db:push`) in production
 
 ---
 
