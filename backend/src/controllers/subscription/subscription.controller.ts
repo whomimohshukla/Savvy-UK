@@ -4,7 +4,9 @@ import { AppError } from '../../utils/AppError';
 import { env } from '../../config/env';
 import { AuthRequest } from '../../middleware/authenticate';
 
-const PLANS = {
+type PlanKey = 'FREE' | 'PRO' | 'PREMIUM';
+
+const PLANS: Record<PlanKey, { price: number; name: string; features: string[] }> = {
   FREE: { price: 0, name: 'Free', features: ['1 benefits check/month', '1 bill upload', 'Basic alerts'] },
   PRO: { price: 4.99, name: 'Pro', features: ['Unlimited benefits checks', '5 bill uploads/month', 'Smart alerts', 'Energy comparison', 'Priority support'] },
   PREMIUM: { price: 9.99, name: 'Premium', features: ['Everything in Pro', 'Unlimited bill uploads', 'Monthly auto-scan', 'Insurance comparison', 'White-glove claim help', 'CSV export'] },
@@ -38,7 +40,7 @@ export async function getCurrentSubscription(req: AuthRequest, res: Response, ne
       data: {
         subscription,
         plan: user?.plan,
-        planDetails: PLANS[user?.plan ?? 'FREE'],
+        planDetails: PLANS[(user?.plan as PlanKey | undefined) ?? 'FREE'],
       },
     });
   } catch (error) {

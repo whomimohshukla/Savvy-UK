@@ -56,7 +56,7 @@ export async function getDashboard(req: AuthRequest, res: Response, next: NextFu
     const totalPotential =
       (latestBenefits?.totalPotentialValue ?? 0) +
       (latestEnergyScan?.potentialSaving ?? 0) +
-      bills.reduce((sum, b) => sum + (b.potentialSaving ?? 0), 0);
+      bills.reduce((sum: number, b: { potentialSaving: number | null }) => sum + (b.potentialSaving ?? 0), 0);
 
     const dashboard = {
       user,

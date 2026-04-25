@@ -6,9 +6,11 @@ import { env } from '../../config/env';
 import { logger } from '../../config/logger';
 import { AuthRequest } from '../../middleware/authenticate';
 
-function getStripe(): Stripe {
+type StripeClient = InstanceType<typeof Stripe>;
+
+function getStripe(): StripeClient {
   if (!env.STRIPE_SECRET_KEY) throw new AppError('Stripe is not configured', 503);
-  return new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: '2025-04-30.basil' });
+  return new Stripe(env.STRIPE_SECRET_KEY);
 }
 
 // POST /api/v1/subscription/stripe/checkout
@@ -78,7 +80,7 @@ export async function handleStripeWebhook(req: Request, res: Response, next: Nex
     return res.status(400).json({ error: 'Missing Stripe signature or webhook secret' });
   }
 
-  let event: Stripe.Event;
+  let event: any;
   try {
     const stripe = getStripe();
     event = stripe.webhooks.constructEvent(req.body as Buffer, sig, env.STRIPE_WEBHOOK_SECRET);
@@ -90,14 +92,14 @@ export async function handleStripeWebhook(req: Request, res: Response, next: Nex
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
+        const session = event.data.object as any;
         if (session.mode !== 'subscription') break;
 
         const { userId, plan } = session.metadata ?? {};
         if (!userId || !plan) break;
 
         const stripe = getStripe();
-        const sub = await stripe.subscriptions.retrieve(session.subscription as string);
+        const sub = await stripe.subscriptions.retrieve(session.subscription as string) as any;
 
         await prisma.$transaction([
           prisma.user.update({ where: { id: userId }, data: { plan: plan as any } }),
@@ -129,7 +131,7 @@ export async function handleStripeWebhook(req: Request, res: Response, next: Nex
       }
 
       case 'customer.subscription.updated': {
-        const sub = event.data.object as Stripe.Subscription;
+        const sub = event.data.object as any;
         const { userId, plan } = sub.metadata ?? {};
         if (!userId) break;
 
@@ -151,7 +153,7 @@ export async function handleStripeWebhook(req: Request, res: Response, next: Nex
       }
 
       case 'customer.subscription.deleted': {
-        const sub = event.data.object as Stripe.Subscription;
+        const sub = event.data.object as any;
         const { userId } = sub.metadata ?? {};
         if (!userId) break;
 
@@ -168,7 +170,7 @@ export async function handleStripeWebhook(req: Request, res: Response, next: Nex
       }
 
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as any;
         const customerId = invoice.customer as string;
         await prisma.subscription.updateMany({
           where: { stripeCustomerId: customerId },

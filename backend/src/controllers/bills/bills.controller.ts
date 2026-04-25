@@ -5,8 +5,18 @@ import { analyzeBillWithAI } from '../../services/ai/billsAI.service';
 import { extractTextFromPDF } from '../../services/pdf/pdfParser.service';
 import { cacheDel, CacheKeys } from '../../config/redis';
 import { AuthRequest } from '../../middleware/authenticate';
-import { AlertType, BillType } from '@prisma/client';
 import { logger } from '../../config/logger';
+
+const BILL_TYPES = ['ENERGY', 'BROADBAND', 'MOBILE', 'WATER', 'COUNCIL_TAX', 'TV_LICENCE', 'OTHER'] as const;
+type BillType = typeof BILL_TYPES[number];
+
+type AlertType =
+  | 'BENEFIT_FOUND'
+  | 'ENERGY_SAVING'
+  | 'BROADBAND_SAVING'
+  | 'PRICE_CAP_CHANGE'
+  | 'BENEFIT_DEADLINE'
+  | 'MONTHLY_SCAN';
 
 function getAlertTypeForBill(type: BillType): AlertType | null {
   if (type === 'ENERGY') return 'ENERGY_SAVING';
@@ -22,8 +32,8 @@ export async function uploadBill(req: AuthRequest, res: Response, next: NextFunc
     const file = req.file;
 
     if (!file) throw new AppError('No file uploaded', 400);
-    if (!Object.values(BillType).includes(type)) {
-      throw new AppError(`Invalid bill type. Must be one of: ${Object.values(BillType).join(', ')}`, 400);
+    if (!BILL_TYPES.includes(type as BillType)) {
+      throw new AppError(`Invalid bill type. Must be one of: ${BILL_TYPES.join(', ')}`, 400);
     }
 
     // Extract text from PDF
