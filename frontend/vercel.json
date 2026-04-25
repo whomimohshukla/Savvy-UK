@@ -24,7 +24,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-url.com/api/:path*"
+      "destination": "https://your-backend-deployment-url.com/api/:path*"
     }
   ],
   "env": {
