@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>()(
         set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
     }),
     {
-      name: 'savvy-auth',
+      name: 'claimwise-auth',
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
 // This is needed because the server login response may not always return
 // onboardingDone: true even after the user has completed onboarding.
 
-const ONBOARDING_KEY = 'savvy-onboarding-done';
+const ONBOARDING_KEY = 'claimwise-onboarding-done';
 
 export function markOnboardingDone(email: string): void {
   if (typeof window === 'undefined') return;

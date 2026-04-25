@@ -142,7 +142,7 @@ export default function LandingPage() {
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700">
               <Clock className="h-3.5 w-3.5" /> 60 seconds
             </div>
-            <h2 className="section-title mb-4">How Savvy UK works</h2>
+            <h2 className="section-title mb-4">How ClaimWise UK works</h2>
             <p className="section-subtitle">Three simple steps to finding your unclaimed money</p>
           </div>
 
@@ -349,10 +349,10 @@ export default function LandingPage() {
             <div className="md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
-                  <span className="text-xs font-black text-white">S</span>
+                  <span className="text-xs font-black text-white">C</span>
                 </div>
                 <span className="font-bold text-green-950 text-lg">
-                  Savvy <span className="text-emerald-500">UK</span>
+                  ClaimWise <span className="text-emerald-500">UK</span>
                 </span>
               </div>
               <p className="text-sm text-green-600 leading-relaxed">
@@ -378,7 +378,7 @@ export default function LandingPage() {
             <div>
               <h4 className="text-xs font-bold uppercase tracking-widest text-green-500 mb-4">Company</h4>
               <ul className="space-y-3">
-                {[['About', '/about'], ['Contact', 'mailto:hello@savvy-uk.com'], ['Privacy', '/privacy'], ['Terms', '/terms']].map(([l, h]) => (
+                {[['About', '/about'], ['Contact', 'mailto:hello@claimwise.co.uk'], ['Privacy', '/privacy'], ['Terms', '/terms']].map(([l, h]) => (
                   <li key={l}>
                     <Link href={h} className="text-sm text-green-700 hover:text-emerald-600 transition-colors">
                       {l}
@@ -405,14 +405,14 @@ export default function LandingPage() {
 
           <div className="border-t border-emerald-100 pt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
             <p className="text-xs text-green-500 max-w-xl text-center md:text-left">
-              Savvy UK is an informational tool and is not a regulated financial adviser. Always verify eligibility at{' '}
+              ClaimWise UK is an informational tool and is not a regulated financial adviser. Always verify eligibility at{' '}
               <a href="https://www.gov.uk/benefits" className="underline hover:text-emerald-600 transition-colors" target="_blank" rel="noopener">
                 gov.uk
               </a>.
               Data: ONS Dec 2025 · Policy in Practice 2025 · Ofcom 2025 · Ofgem Q1 2026.
             </p>
             <p className="text-xs text-green-500 flex-shrink-0">
-              © {new Date().getFullYear()} Savvy UK. All rights reserved.
+              © {new Date().getFullYear()} ClaimWise UK. All rights reserved.
             </p>
           </div>
         </div>
@@ -503,7 +503,7 @@ const STATS = [
 
 const TESTIMONIALS = [
   {
-    quote: "I had no idea I was entitled to Carer's Allowance until Savvy UK told me. That's £3,624 a year I was missing. Absolutely game-changing.",
+    quote: "I had no idea I was entitled to Carer's Allowance until ClaimWise UK told me. That's £3,624 a year I was missing. Absolutely game-changing.",
     name: 'Sarah M.',
     location: 'Manchester',
     saved: '£3,624/yr',

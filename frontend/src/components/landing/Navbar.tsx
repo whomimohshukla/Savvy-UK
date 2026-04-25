@@ -47,12 +47,12 @@ export function LandingNavbar() {
                 ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
                 : 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]'
             }`}>
-              <span className="text-sm font-black text-white">S</span>
+              <span className="text-sm font-black text-white">C</span>
             </div>
             <span className={`text-lg font-bold tracking-tight transition-colors duration-300 ${
               scrolled ? 'text-green-900' : 'text-white'
             }`}>
-              Savvy <span className={scrolled ? 'text-emerald-500' : 'text-emerald-400'}>UK</span>
+              ClaimWise <span className={scrolled ? 'text-emerald-500' : 'text-emerald-400'}>UK</span>
             </span>
           </Link>
 

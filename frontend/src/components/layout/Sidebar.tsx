@@ -59,10 +59,10 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
       <div className="flex h-16 items-center justify-between px-5 border-b border-emerald-100">
         <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-            <span className="text-sm font-black text-white">S</span>
+            <span className="text-sm font-black text-white">C</span>
           </div>
           <span className="text-lg font-bold text-green-950 tracking-tight">
-            Savvy <span className="text-emerald-500">UK</span>
+            ClaimWise <span className="text-emerald-500">UK</span>
           </span>
         </Link>
         {mobile && (

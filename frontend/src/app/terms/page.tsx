@@ -6,15 +6,15 @@ export const metadata = { title: 'Terms of Service' };
 const SECTIONS = [
   {
     title: '1. Acceptance of terms',
-    content: 'By creating an account or using Savvy UK, you agree to these Terms of Service. If you do not agree, please do not use the service. We may update these terms periodically; continued use after changes constitutes acceptance.',
+    content: 'By creating an account or using ClaimWise UK, you agree to these Terms of Service. If you do not agree, please do not use the service. We may update these terms periodically; continued use after changes constitutes acceptance.',
   },
   {
     title: '2. Service description',
-    content: 'Savvy UK is an AI-powered informational tool that identifies potential UK benefit entitlements, energy tariff savings, and broadband social tariff eligibility based on information you provide. We are not a regulated financial adviser. All results are for guidance only and should be verified at gov.uk or with a qualified adviser.',
+    content: 'ClaimWise UK is an AI-powered informational tool that identifies potential UK benefit entitlements, energy tariff savings, and broadband social tariff eligibility based on information you provide. We are not a regulated financial adviser. All results are for guidance only and should be verified at gov.uk or with a qualified adviser.',
   },
   {
     title: '3. Eligibility',
-    content: 'You must be 18 years or older and a resident of the United Kingdom to use Savvy UK. By registering, you confirm these conditions are met.',
+    content: 'You must be 18 years or older and a resident of the United Kingdom to use ClaimWise UK. By registering, you confirm these conditions are met.',
   },
   {
     title: '4. User responsibilities',
@@ -22,7 +22,7 @@ const SECTIONS = [
   },
   {
     title: '5. Disclaimers',
-    content: 'Savvy UK makes no guarantees that benefit check results are accurate or complete. Eligibility rules change frequently. Always verify results at gov.uk. We are not liable for any financial decisions made based on our output. Energy and broadband savings estimates are indicative and based on publicly available tariff data.',
+    content: 'ClaimWise UK makes no guarantees that benefit check results are accurate or complete. Eligibility rules change frequently. Always verify results at gov.uk. We are not liable for any financial decisions made based on our output. Energy and broadband savings estimates are indicative and based on publicly available tariff data.',
   },
   {
     title: '6. Subscriptions & payments',
@@ -30,7 +30,7 @@ const SECTIONS = [
   },
   {
     title: '7. Intellectual property',
-    content: 'All content, design, and code within Savvy UK is owned by Savvy UK Ltd. You may not copy, reproduce, or distribute any part of the service without written permission.',
+    content: 'All content, design, and code within ClaimWise UK is owned by ClaimWise UK Ltd. You may not copy, reproduce, or distribute any part of the service without written permission.',
   },
   {
     title: '8. Termination',
@@ -42,7 +42,7 @@ const SECTIONS = [
   },
   {
     title: '10. Contact',
-    content: 'For questions about these terms, email legal@savvy-uk.com or write to Savvy UK Ltd, United Kingdom.',
+    content: 'For questions about these terms, email legal@claimwise.co.uk or write to ClaimWise UK Ltd, United Kingdom.',
   },
 ];
 
@@ -76,14 +76,14 @@ export default function TermsPage() {
 
         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
           <p className="text-sm text-amber-800 leading-relaxed">
-            <strong>Important:</strong> Savvy UK is an informational tool only and is not a regulated financial adviser.
+            <strong>Important:</strong> ClaimWise UK is an informational tool only and is not a regulated financial adviser.
             Always verify benefit eligibility directly at{' '}
             <a href="https://www.gov.uk/benefits" className="underline" target="_blank" rel="noopener">gov.uk</a>.
           </p>
         </div>
 
         <p className="text-center text-xs text-slate-400 pb-4">
-          © {new Date().getFullYear()} Savvy UK Ltd. All rights reserved.
+          © {new Date().getFullYear()} ClaimWise UK Ltd. All rights reserved.
         </p>
       </div>
     </div>

@@ -51,9 +51,9 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 text-white bg-emerald-700">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20">
-            <span className="text-base font-black text-white">S</span>
+            <span className="text-base font-black text-white">C</span>
           </div>
-          <span className="text-xl font-bold tracking-tight">Savvy UK</span>
+          <span className="text-xl font-bold tracking-tight">ClaimWise UK</span>
         </Link>
 
         <div className="space-y-8">
@@ -90,9 +90,9 @@ export default function LoginPage() {
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
-                <span className="text-sm font-black text-white">S</span>
+                <span className="text-sm font-black text-white">C</span>
               </div>
-              <span className="text-lg font-bold text-green-900">Savvy UK</span>
+              <span className="text-lg font-bold text-green-900">ClaimWise UK</span>
             </Link>
             <Link href="/" className="flex items-center gap-1.5 text-sm text-green-600 hover:text-green-800 transition-colors">
               <ArrowLeft className="h-3.5 w-3.5" /> Back
@@ -178,7 +178,7 @@ export default function LoginPage() {
           <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-center">
             <p className="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">Try the demo</p>
             <div className="space-y-1">
-              <p className="text-xs text-green-700">Email: <code className="font-semibold">demo@savvy-uk.com</code></p>
+              <p className="text-xs text-green-700">Email: <code className="font-semibold">demo@claimwise.co.uk</code></p>
               <p className="text-xs text-green-700">Password: <code className="font-semibold">Password123!</code></p>
             </div>
           </div>

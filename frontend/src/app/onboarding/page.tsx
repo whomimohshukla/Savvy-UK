@@ -101,10 +101,10 @@ export default function OnboardingPage() {
       <header className="flex h-16 items-center justify-between px-6 border-b border-emerald-100 bg-white sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.35)]">
-            <span className="text-sm font-black text-white">S</span>
+            <span className="text-sm font-black text-white">C</span>
           </div>
           <span className="font-bold text-green-950 tracking-tight">
-            Savvy <span className="text-emerald-500">UK</span>
+            ClaimWise <span className="text-emerald-500">UK</span>
           </span>
         </Link>
 

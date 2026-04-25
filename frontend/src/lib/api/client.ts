@@ -17,7 +17,7 @@ class ApiError extends Error {
 async function getAccessToken(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem('savvy-auth');
+    const raw = localStorage.getItem('claimwise-auth');
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed?.state?.accessToken ?? null;
@@ -29,7 +29,7 @@ async function getAccessToken(): Promise<string | null> {
 async function getRefreshToken(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem('savvy-auth');
+    const raw = localStorage.getItem('claimwise-auth');
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed?.state?.refreshToken ?? null;
@@ -53,11 +53,11 @@ async function refreshAccessToken(): Promise<string | null> {
   const newToken = data?.data?.accessToken;
 
   if (newToken && typeof window !== 'undefined') {
-    const raw = localStorage.getItem('savvy-auth');
+    const raw = localStorage.getItem('claimwise-auth');
     if (raw) {
       const parsed = JSON.parse(raw);
       parsed.state.accessToken = newToken;
-      localStorage.setItem('savvy-auth', JSON.stringify(parsed));
+      localStorage.setItem('claimwise-auth', JSON.stringify(parsed));
     }
   }
 
@@ -91,7 +91,7 @@ async function request<T>(method: Method, path: string, options: ApiOptions = {}
     } else {
       // Refresh failed — clear auth and redirect
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('savvy-auth');
+        localStorage.removeItem('claimwise-auth');
         window.location.href = '/auth';
       }
       throw new ApiError(401, 'Session expired. Please log in again.');
@@ -153,7 +153,7 @@ export const benefitsApi = {
 
 export const billsApi = {
   upload: async (formData: FormData) => {
-    const raw = typeof window !== 'undefined' ? localStorage.getItem('savvy-auth') : null;
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('claimwise-auth') : null;
     const token = raw ? JSON.parse(raw).state?.accessToken ?? '' : '';
     const res = await fetch(`${API_BASE}/api/v1/bills/upload`, {
       method: 'POST',

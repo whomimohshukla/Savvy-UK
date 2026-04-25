@@ -11,16 +11,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Savvy UK — Find your unclaimed benefits & bill savings',
-    template: '%s | Savvy UK',
+    default: 'ClaimWise UK — Find your unclaimed benefits & bill savings',
+    template: '%s | ClaimWise UK',
   },
   description:
     "AI-powered tool that finds your unclaimed UK benefits, cuts your energy bill, and saves you money in minutes. £24 billion goes unclaimed every year — find out what you're missing.",
   keywords: ['UK benefits calculator', 'energy bill comparison', 'universal credit', 'unclaimed benefits', 'save money UK'],
   openGraph: {
-    title: 'Savvy UK — Find your unclaimed benefits & bill savings',
+    title: 'ClaimWise UK — Find your unclaimed benefits & bill savings',
     description: 'Discover thousands of pounds in unclaimed UK benefits and bill savings with AI.',
-    siteName: 'Savvy UK',
+    siteName: 'ClaimWise UK',
     locale: 'en_GB',
     type: 'website',
   },

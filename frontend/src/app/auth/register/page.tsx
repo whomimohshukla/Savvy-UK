@@ -37,7 +37,7 @@ export default function RegisterPage() {
     try {
       const res = await authApi.register(data) as any;
       setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
-      toast({ variant: 'success', title: 'Account created!', description: 'Welcome to Savvy UK.' });
+      toast({ variant: 'success', title: 'Account created!', description: 'Welcome to ClaimWise UK.' });
       setRedirecting(true);
       router.push('/onboarding');
     } catch (err: any) {
@@ -55,9 +55,9 @@ export default function RegisterPage() {
 
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20">
-            <span className="text-base font-black text-white">S</span>
+            <span className="text-base font-black text-white">C</span>
           </div>
-          <span className="text-xl font-bold tracking-tight">Savvy UK</span>
+          <span className="text-xl font-bold tracking-tight">ClaimWise UK</span>
         </Link>
 
         <div className="space-y-8">
@@ -96,9 +96,9 @@ export default function RegisterPage() {
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
-                <span className="text-sm font-black text-white">S</span>
+                <span className="text-sm font-black text-white">C</span>
               </div>
-              <span className="text-lg font-bold text-green-900">Savvy UK</span>
+              <span className="text-lg font-bold text-green-900">ClaimWise UK</span>
             </Link>
             <Link href="/" className="flex items-center gap-1.5 text-sm text-green-600 hover:text-green-800 transition-colors">
               <ArrowLeft className="h-3.5 w-3.5" /> Back

@@ -489,7 +489,7 @@ export default function SettingsPage() {
             { label: 'Privacy Policy',   href: '/privacy' },
             { label: 'Terms of Service', href: '/terms' },
             { label: 'ICO Registration', href: 'https://ico.org.uk', external: true },
-            { label: 'Contact us',       href: 'mailto:hello@savvy-uk.com', external: true },
+            { label: 'Contact us',       href: 'mailto:hello@claimwise.co.uk', external: true },
           ].map((link) => (
             <a key={link.label} href={link.href}
               target={link.external ? '_blank' : undefined}
@@ -527,7 +527,7 @@ export default function SettingsPage() {
       </Card>
 
       <p className="text-xs text-green-400 text-center pb-4">
-        Savvy UK provides informational guidance only — not regulated financial advice.
+        ClaimWise UK provides informational guidance only — not regulated financial advice.
         We do not store uploaded bill files. Registered with the ICO.
       </p>
     </div>

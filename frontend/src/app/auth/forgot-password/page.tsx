@@ -29,9 +29,9 @@ export default function ForgotPasswordPage() {
         <div className="mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500">
-              <span className="text-sm font-black text-white">S</span>
+              <span className="text-sm font-black text-white">C</span>
             </div>
-            <span className="text-lg font-bold text-green-950 tracking-tight">Savvy <span className="text-emerald-500">UK</span></span>
+            <span className="text-lg font-bold text-green-950 tracking-tight">ClaimWise <span className="text-emerald-500">UK</span></span>
           </Link>
         </div>
 

@@ -51,7 +51,7 @@ const VALUES = [
 const STATS = [
   { value: '£2.3bn', label: 'benefits unclaimed in the UK each year' },
   { value: '8m+', label: 'households eligible for but not receiving support' },
-  { value: '£1,200', label: 'average annual saving per Savvy UK user' },
+  { value: '£1,200', label: 'average annual saving per ClaimWise UK user' },
   { value: 'ICO', label: 'registered data controller' },
 ];
 
@@ -65,7 +65,7 @@ export default function AboutPage() {
             <div className="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-glow-sm">
               <span className="text-white font-black text-sm">S</span>
             </div>
-            <span className="font-bold text-slate-900 text-lg tracking-tight">Savvy UK</span>
+            <span className="font-bold text-slate-900 text-lg tracking-tight">ClaimWise UK</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600">
             <Link href="/" className="hover:text-slate-900 transition-colors">Home</Link>
@@ -96,7 +96,7 @@ export default function AboutPage() {
           </h1>
           <p className="text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
             Billions of pounds in benefits go unclaimed every year — not because people don&apos;t need them,
-            but because the system is complex. Savvy UK uses AI to change that.
+            but because the system is complex. ClaimWise UK uses AI to change that.
           </p>
         </div>
       </section>
@@ -125,12 +125,12 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-slate-600 leading-relaxed">
               <p>
-                Savvy UK started as a spreadsheet. Our founders were welfare rights advisers helping people
+                ClaimWise UK started as a spreadsheet. Our founders were welfare rights advisers helping people
                 in food banks and community centres understand what support was available to them.
                 The results were life-changing — but they couldn&apos;t reach enough people.
               </p>
               <p>
-                So they built Savvy UK: an AI-powered platform that does in minutes what used to take hours
+                So they built ClaimWise UK: an AI-powered platform that does in minutes what used to take hours
                 of one-on-one advice. Benefits eligibility, bill comparison, broadband tariffs, energy switching —
                 all in one place, with plain-English guidance.
               </p>
@@ -248,7 +248,7 @@ export default function AboutPage() {
             <ArrowRight className="h-4 w-4" />
           </Link>
           <p className="text-xs text-slate-400 mt-4">
-            Savvy UK provides informational guidance only — not regulated financial advice.
+            ClaimWise UK provides informational guidance only — not regulated financial advice.
           </p>
         </div>
       </section>
@@ -256,11 +256,11 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="border-t border-slate-100 py-8 px-6">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-400">
-          <p>© {new Date().getFullYear()} Savvy UK. Registered with the ICO.</p>
+          <p>© {new Date().getFullYear()} ClaimWise UK. Registered with the ICO.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-slate-600 transition-colors">Terms</Link>
-            <a href="mailto:hello@savvy-uk.com" className="hover:text-slate-600 transition-colors">Contact</a>
+            <a href="mailto:hello@claimwise.co.uk" className="hover:text-slate-600 transition-colors">Contact</a>
           </div>
         </div>
       </footer>

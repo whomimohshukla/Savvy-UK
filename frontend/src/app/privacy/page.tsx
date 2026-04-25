@@ -42,7 +42,7 @@ const SECTIONS = [
       'Rectification: correct any inaccurate data.',
       'Erasure: delete your account and all associated data.',
       'Portability: export your savings data as CSV.',
-      'To exercise any right, email privacy@savvy-uk.com.',
+      'To exercise any right, email privacy@claimwise.co.uk.',
     ],
   },
   {
@@ -58,8 +58,8 @@ const SECTIONS = [
     icon: <Mail className="h-5 w-5 text-emerald-600" />,
     title: 'Contact',
     content: [
-      'Data Controller: Savvy UK Ltd.',
-      'Privacy queries: privacy@savvy-uk.com',
+      'Data Controller: ClaimWise UK Ltd.',
+      'Privacy queries: privacy@claimwise.co.uk',
       'Complaints: you may also lodge a complaint with the ICO at ico.org.uk.',
     ],
   },
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
         ))}
 
         <p className="text-center text-xs text-slate-400 pb-4">
-          © {new Date().getFullYear()} Savvy UK. Savvy UK is an informational tool, not a regulated financial adviser.
+          © {new Date().getFullYear()} ClaimWise UK. ClaimWise UK is an informational tool, not a regulated financial adviser.
         </p>
       </div>
     </div>

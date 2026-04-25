@@ -176,7 +176,7 @@ export function LoadingPage({ label = 'Loading…' }: { label?: string }) {
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
           <div className="h-14 w-14 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-[0_0_24px_rgba(16,185,129,0.35)]">
-            <span className="text-lg font-black text-white">S</span>
+            <span className="text-lg font-black text-white">C</span>
           </div>
           <div className="absolute -inset-1.5 rounded-2xl border-2 border-emerald-400/30 animate-ping" />
         </div>
@@ -202,7 +202,7 @@ export function PageLoader({ message = 'Setting up your dashboard…' }: { messa
       <div className="flex flex-col items-center gap-6">
         <div className="relative">
           <div className="h-20 w-20 rounded-3xl bg-emerald-500 flex items-center justify-center shadow-[0_0_40px_rgba(16,185,129,0.4)]">
-            <span className="text-3xl font-black text-white">S</span>
+            <span className="text-3xl font-black text-white">C</span>
           </div>
           <div className="absolute -inset-2 rounded-3xl border-2 border-emerald-400/20 animate-ping" />
         </div>

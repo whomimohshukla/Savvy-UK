@@ -21,7 +21,7 @@ export default function Icon() {
           color: 'white',
         }}
       >
-        S
+        C
       </div>
     ),
     { ...size },
