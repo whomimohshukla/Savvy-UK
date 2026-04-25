@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prisma:generate": "prisma generate",
+    "predev": "npm run prisma:generate",
     "dev": "tsx watch src/index.ts",
+    "prebuild": "npm run prisma:generate",
     "build": "tsc",
     "start": "node dist/index.js",
+    "postinstall": "npm run prisma:generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
