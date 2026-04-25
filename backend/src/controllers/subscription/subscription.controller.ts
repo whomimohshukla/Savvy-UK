@@ -76,7 +76,7 @@ export async function createCheckout(req: AuthRequest, res: Response, next: Next
       body: JSON.stringify({
         customer: { email: user.email, name: user.name },
         product: {
-          name: `Savvy UK ${plan} Plan`,
+          name: `ClaimWise UK ${plan} Plan`,
           description: `Monthly ${plan.toLowerCase()} subscription`,
           price: priceGbp,
           currency: 'GBP',

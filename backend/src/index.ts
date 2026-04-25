@@ -60,7 +60,7 @@ app.use(requestLogger);
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
-    service: 'savvy-uk-api',
+    service: 'claimwise-api',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     env: env.NODE_ENV,
@@ -92,7 +92,7 @@ async function bootstrap() {
     }
 
     app.listen(env.PORT, () => {
-      logger.info(`🚀 Savvy UK API running on port ${env.PORT}`);
+      logger.info(`🚀 ClaimWise UK API running on port ${env.PORT}`);
       logger.info(`📍 Environment: ${env.NODE_ENV}`);
       logger.info(`🌐 CORS origin: ${env.FRONTEND_URL}`);
     });

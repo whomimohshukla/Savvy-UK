@@ -10,10 +10,10 @@ async function main() {
   const hash = await bcrypt.hash('Password123!', 12);
 
   const user = await prisma.user.upsert({
-    where: { email: 'demo@savvy-uk.com' },
+    where: { email: 'demo@claimwise.co.uk' },
     update: {},
     create: {
-      email: 'demo@savvy-uk.com',
+      email: 'demo@claimwise.co.uk',
       passwordHash: hash,
       name: 'Demo User',
       postcode: 'SW1A 1AA',
@@ -49,7 +49,7 @@ async function main() {
     ],
   });
 
-  console.log('✅ Demo user created: demo@savvy-uk.com / Password123!');
+  console.log('✅ Demo user created: demo@claimwise.co.uk / Password123!');
   console.log('✅ Sample alerts and savings created');
   console.log('🎉 Seed complete!');
 }

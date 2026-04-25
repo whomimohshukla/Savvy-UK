@@ -281,7 +281,7 @@ function runRulesBasedBenefitsCheck(profile: Record<string, any>): BenefitsCheck
   const dedupedBenefits = dedupeBenefits(benefits).filter((benefit) => benefit.probability !== 'LOW');
   const totalValue = dedupedBenefits.reduce((sum, benefit) => sum + benefit.annualValue, 0);
   const summary = dedupedBenefits.length > 0
-    ? `We found ${dedupedBenefits.length} support option${dedupedBenefits.length === 1 ? '' : 's'} using Savvy UK's built-in eligibility rules. These results are conservative and based on the details you entered.`
+    ? `We found ${dedupedBenefits.length} support option${dedupedBenefits.length === 1 ? '' : 's'} using ClaimWise UK's built-in eligibility rules. These results are conservative and based on the details you entered.`
     : 'No clear unclaimed benefits were identified from the answers provided, but a fuller check may still find local or situation-specific support.';
 
   return {

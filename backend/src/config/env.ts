@@ -23,8 +23,15 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required for Google login'),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 
+  // Email — Nodemailer (Gmail SMTP, free)
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_USER: z.string().optional(),        // your Gmail address
+  SMTP_PASS: z.string().optional(),        // Gmail App Password (not your login password)
+  EMAIL_FROM: z.string().default('ClaimWise UK <noreply@claimwise.co.uk>'),
+
+  // Resend (alternative, optional)
   RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().email().default('noreply@savvy-uk.com'),
 
   DODO_API_KEY: z.string().optional(),
   DODO_WEBHOOK_SECRET: z.string().optional(),
