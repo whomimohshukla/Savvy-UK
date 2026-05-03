@@ -27,8 +27,8 @@ export async function checkBenefits(req: AuthRequest, res: Response, next: NextF
       data: {
         userId,
         totalPotentialValue: result.totalValue,
-        benefitsFound: result.benefits,
-        benefitsAlreadyClaiming: result.alreadyClaiming,
+        benefitsFound: result.benefits as unknown as import('@prisma/client').Prisma.InputJsonValue,
+        benefitsAlreadyClaiming: (result.alreadyClaiming ?? []) as unknown as import('@prisma/client').Prisma.InputJsonValue,
         aiSummary: result.summary,
         confidenceScore: result.confidence,
       },
