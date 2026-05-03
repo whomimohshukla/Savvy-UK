@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { prisma } from '../config/database';
 import { AppError } from '../utils/AppError';
+import { cacheGet, cacheSet, cacheDel, CacheKeys, CACHE_TTL } from '../config/redis';
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -16,25 +17,29 @@ export async function authenticate(
 ): Promise<void> {
   try {
     const authHeader = req.headers.authorization;
-
     if (!authHeader?.startsWith('Bearer ')) {
       throw new AppError('No token provided', 401);
     }
 
     const token = authHeader.split(' ')[1];
-
     const payload = jwt.verify(token, env.JWT_SECRET) as {
       userId: string;
       email: string;
     };
 
-    // Attach user info to request
     req.userId = payload.userId;
 
-    // Optionally load plan from DB (cache this in production)
+    // Cache plan lookup — avoids a DB hit on every authenticated request
+    const cached = await cacheGet<string>(CacheKeys.userPlan(payload.userId));
+    if (cached) {
+      req.userPlan = cached;
+      next();
+      return;
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
-      select: { plan: true, emailVerified: true },
+      select: { plan: true },
     });
 
     if (!user) {
@@ -42,6 +47,7 @@ export async function authenticate(
     }
 
     req.userPlan = user.plan;
+    await cacheSet(CacheKeys.userPlan(payload.userId), user.plan, CACHE_TTL.USER_PLAN);
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
@@ -54,7 +60,7 @@ export async function authenticate(
   }
 }
 
-// Require specific plan
+// Require specific plan tier
 export function requirePlan(...plans: string[]) {
   return (req: AuthRequest, _res: Response, next: NextFunction) => {
     if (!req.userPlan || !plans.includes(req.userPlan)) {
@@ -63,4 +69,9 @@ export function requirePlan(...plans: string[]) {
       next();
     }
   };
+}
+
+// Invalidate the cached plan for a user — call after plan change/upgrade
+export async function invalidatePlanCache(userId: string): Promise<void> {
+  await cacheDel(CacheKeys.userPlan(userId));
 }
