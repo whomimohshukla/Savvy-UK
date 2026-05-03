@@ -85,7 +85,7 @@ export async function createCheckout(req: AuthRequest, res: Response, next: Next
           interval: 'monthly',
         },
         success_url: `${env.FRONTEND_URL}/dashboard?upgrade=success`,
-        cancel_url: `${env.FRONTEND_URL}/settings/billing?upgrade=cancelled`,
+        cancel_url: `${env.FRONTEND_URL}/dashboard/settings?upgrade=cancelled`,
         metadata: { userId, plan },
       }),
     });

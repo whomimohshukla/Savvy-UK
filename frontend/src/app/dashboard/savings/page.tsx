@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useApi } from '@/lib/hooks/useApi';
 import { dashboardApi } from '@/lib/api/client';
@@ -76,7 +77,7 @@ export default function SavingsPage() {
             icon={<TrendingUp className="h-8 w-8" />}
             title="No savings found yet"
             description="Run a benefits check or upload a bill — we'll find savings and track them all here"
-            action={<Button size="md">Go to Benefits Check</Button>}
+            action={<Link href="/dashboard/benefits"><Button size="md">Go to Benefits Check</Button></Link>}
           />
         </Card>
       ) : (

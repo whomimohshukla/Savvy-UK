@@ -26,7 +26,7 @@ export async function updateProfile(req: AuthRequest, res: Response, next: NextF
           ...(householdSize !== undefined && { householdSize: Number(householdSize) }),
           ...(onboardingDone !== undefined && { onboardingDone }),
         },
-        select: { id: true, email: true, name: true, plan: true, postcode: true, onboardingDone: true },
+        select: { id: true, email: true, name: true, plan: true, postcode: true, householdSize: true, onboardingDone: true, googleId: true, avatarUrl: true },
       }),
       prisma.userProfile.upsert({
         where: { userId },

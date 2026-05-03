@@ -153,13 +153,32 @@ export const benefitsApi = {
 
 export const billsApi = {
   upload: async (formData: FormData) => {
-    const raw = typeof window !== 'undefined' ? localStorage.getItem('claimwise-auth') : null;
-    const token = raw ? JSON.parse(raw).state?.accessToken ?? '' : '';
-    const res = await fetch(`${API_BASE}/api/v1/bills/upload`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
+    const makeUploadRequest = async (authToken: string) => {
+      return fetch(`${API_BASE}/api/v1/bills/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${authToken}` },
+        body: formData,
+      });
+    };
+
+    let token = await getAccessToken() ?? '';
+    let res = await makeUploadRequest(token);
+
+    // Token expired during upload — refresh and retry once
+    if (res.status === 401) {
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        token = newToken;
+        res = await makeUploadRequest(newToken);
+      } else {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('claimwise-auth');
+          window.location.href = '/auth';
+        }
+        throw new ApiError(401, 'Session expired. Please log in again.');
+      }
+    }
+
     const data = await res.json();
     if (!res.ok) throw new ApiError(res.status, data?.error || 'Upload failed');
     return data;

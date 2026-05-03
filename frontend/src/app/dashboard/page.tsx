@@ -212,12 +212,12 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Savings chart ── */}
-      {d?.savingsHistory?.length > 0 && (
+      {d?.savingsByCategory?.length > 0 && (
         <div className="animate-fade-up stagger-3">
           <Card>
-            <CardHeader title="Savings over time" subtitle="Monthly breakdown of found savings" />
+            <CardHeader title="Savings by category" subtitle="All savings found for you, grouped by type" />
             <CardBody>
-              <SavingsChart data={d.savingsHistory} />
+              <SavingsChart data={d.savingsByCategory} />
             </CardBody>
           </Card>
         </div>

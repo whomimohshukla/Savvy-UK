@@ -4,15 +4,14 @@ import { AppError } from '../../utils/AppError';
 import { cacheDel, CacheKeys } from '../../config/redis';
 import { AuthRequest } from '../../middleware/authenticate';
 
-function parseAlertStatus(status: unknown): 'UNREAD' | 'READ' | 'DISMISSED' | undefined {
+const VALID_ALERT_STATUSES = ['UNREAD', 'READ', 'DISMISSED', 'ACTED_ON'] as const;
+type AlertStatusFilter = typeof VALID_ALERT_STATUSES[number];
+
+function parseAlertStatus(status: unknown): AlertStatusFilter | undefined {
   if (typeof status !== 'string' || !status.trim()) return undefined;
-
-  const normalized = status.trim().toUpperCase();
-  if (normalized === 'UNREAD' || normalized === 'READ' || normalized === 'DISMISSED') {
-    return normalized;
-  }
-
-  throw new AppError('Invalid alert status filter', 400);
+  const normalized = status.trim().toUpperCase() as AlertStatusFilter;
+  if ((VALID_ALERT_STATUSES as readonly string[]).includes(normalized)) return normalized;
+  throw new AppError(`Invalid status filter. Must be one of: ${VALID_ALERT_STATUSES.join(', ')}`, 400);
 }
 
 // GET /api/v1/alerts

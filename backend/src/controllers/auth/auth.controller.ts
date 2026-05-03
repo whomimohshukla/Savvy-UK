@@ -42,7 +42,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
         postcode: postcode?.toUpperCase(),
         userProfile: { create: {} },
       },
-      select: { id: true, email: true, name: true, plan: true, onboardingDone: true },
+      select: { id: true, email: true, name: true, plan: true, postcode: true, householdSize: true, onboardingDone: true, googleId: true, avatarUrl: true },
     });
 
     const { accessToken, refreshToken } = generateTokens(user.id, user.email);
@@ -75,6 +75,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       where: { email },
       select: {
         id: true, email: true, name: true, plan: true,
+        postcode: true, householdSize: true, googleId: true, avatarUrl: true,
         passwordHash: true, onboardingDone: true,
       },
     });

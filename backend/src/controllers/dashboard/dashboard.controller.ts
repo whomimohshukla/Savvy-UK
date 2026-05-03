@@ -19,6 +19,7 @@ export async function getDashboard(req: AuthRequest, res: Response, next: NextFu
       unreadAlerts,
       totalSavings,
       savingsRecords,
+      savingsByCategory,
     ] = await Promise.all([
       prisma.user.findUnique({
         where: { id: userId },
@@ -50,6 +51,14 @@ export async function getDashboard(req: AuthRequest, res: Response, next: NextFu
         orderBy: { createdAt: 'desc' },
         take: 5,
       }),
+      // Grouped totals per category — powers the savings chart on the dashboard
+      prisma.savingsRecord.groupBy({
+        by: ['category'],
+        where: { userId },
+        _sum: { annualSaving: true },
+        _count: true,
+        orderBy: { _sum: { annualSaving: 'desc' } },
+      }),
     ]);
 
     // Calculate total potential (unclaimed + claimed)
@@ -72,6 +81,7 @@ export async function getDashboard(req: AuthRequest, res: Response, next: NextFu
       latestEnergyScan,
       recentBills: bills,
       recentSavings: savingsRecords,
+      savingsByCategory,
     };
 
     await cacheSet(CacheKeys.userDashboard(userId), dashboard, CACHE_TTL.USER_DASHBOARD);

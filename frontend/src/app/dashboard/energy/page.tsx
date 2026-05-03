@@ -42,8 +42,16 @@ export default function EnergyPage() {
   const handleSwitch = async (partner: string) => {
     try {
       const res = await energyApi.clickAffiliate(partner, 'ENERGY_SWITCH') as any;
-      window.open(res.data.redirectUrl, '_blank', 'noopener');
-    } catch {}
+      const url = res?.data?.redirectUrl;
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        // Fallback to Uswitch if no redirect URL returned
+        window.open('https://www.uswitch.com/gas-electricity/', '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      toast({ variant: 'error', title: 'Could not open switching site', description: 'Try visiting uswitch.com directly to compare deals.' });
+    }
   };
 
   return (
