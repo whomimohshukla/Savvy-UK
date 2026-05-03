@@ -91,13 +91,14 @@ export async function cacheDelPattern(pattern: string): Promise<void> {
 
 // TTL constants (seconds)
 export const CACHE_TTL = {
-  SHORT: 60 * 5,          // 5 minutes
-  MEDIUM: 60 * 30,        // 30 minutes
-  LONG: 60 * 60 * 2,      // 2 hours
+  SHORT: 60 * 5,           // 5 minutes
+  MEDIUM: 60 * 30,         // 30 minutes
+  LONG: 60 * 60 * 2,       // 2 hours
   VERY_LONG: 60 * 60 * 24, // 24 hours
-  BENEFITS: 60 * 60 * 6,  // 6 hours — benefit rules don't change often
-  ENERGY: 60 * 30,        // 30 minutes — tariffs change more
+  BENEFITS: 60 * 60 * 6,   // 6 hours — benefit rules don't change often
+  ENERGY: 60 * 30,         // 30 minutes — tariffs change more
   USER_DASHBOARD: 60 * 10, // 10 minutes
+  USER_PLAN: 60 * 5,       // 5 minutes — plan check cache to cut DB queries
 };
 
 // Cache key generators
@@ -105,6 +106,7 @@ export const CacheKeys = {
   userDashboard: (userId: string) => `dashboard:${userId}`,
   userBenefits: (userId: string) => `benefits:${userId}`,
   userAlerts: (userId: string) => `alerts:${userId}`,
+  userPlan: (userId: string) => `plan:${userId}`,
   energyTariffs: (postcode: string) => `energy:tariffs:${postcode}`,
   benefitRules: () => `benefits:rules`,
   session: (token: string) => `session:${token}`,
