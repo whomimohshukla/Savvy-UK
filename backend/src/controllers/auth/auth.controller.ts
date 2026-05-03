@@ -312,15 +312,17 @@ export async function deleteAccount(req: Request, res: Response, next: NextFunct
       if (!isValid) throw new AppError('Incorrect password', 400);
     }
 
-    // Delete in correct order (cascades handle most, but explicit for safety)
-    await prisma.refreshToken.deleteMany({ where: { userId } });
-    await prisma.alert.deleteMany({ where: { userId } });
-    await prisma.saving.deleteMany({ where: { userId } });
-    await prisma.energyScan.deleteMany({ where: { userId } });
-    await prisma.bill.deleteMany({ where: { userId } });
-    await prisma.benefitsCheck.deleteMany({ where: { userId } });
-    await prisma.userProfile.deleteMany({ where: { userId } });
-    await prisma.user.delete({ where: { id: userId } });
+    // Delete all user data atomically; cascade on User handles most relations
+    await prisma.$transaction([
+      prisma.refreshToken.deleteMany({ where: { userId } }),
+      prisma.alert.deleteMany({ where: { userId } }),
+      prisma.savingsRecord.deleteMany({ where: { userId } }),
+      prisma.energyScan.deleteMany({ where: { userId } }),
+      prisma.bill.deleteMany({ where: { userId } }),
+      prisma.benefitsCheck.deleteMany({ where: { userId } }),
+      prisma.userProfile.deleteMany({ where: { userId } }),
+      prisma.user.delete({ where: { id: userId } }),
+    ]);
 
     // Clear cache
     await cacheDel(CacheKeys.userDashboard(userId));
