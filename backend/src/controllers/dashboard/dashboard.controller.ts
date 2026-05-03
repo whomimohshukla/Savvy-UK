@@ -112,14 +112,15 @@ export async function markSavingClaimed(req: AuthRequest, res: Response, next: N
     const userId = req.userId!;
     const { id } = req.params;
 
-    const record = await prisma.savingsRecord.findFirst({ where: { id, userId } });
+    const recordId = String(id);
+    const record = await prisma.savingsRecord.findFirst({ where: { id: recordId, userId } });
     if (!record) {
       res.status(404).json({ success: false, error: 'Record not found' });
       return;
     }
 
     const updated = await prisma.savingsRecord.update({
-      where: { id },
+      where: { id: recordId },
       data: { claimed: true, claimedAt: new Date() },
     });
 
