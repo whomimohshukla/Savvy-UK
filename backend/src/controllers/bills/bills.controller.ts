@@ -113,7 +113,7 @@ export async function getBills(req: AuthRequest, res: Response, next: NextFuncti
     const bills = await prisma.bill.findMany({
       where: {
         userId,
-        ...(type ? { type: type as BillType } : {}),
+        ...(type ? { type: String(type) as BillType } : {}),
       },
       orderBy: { uploadedAt: 'desc' },
     });
@@ -130,7 +130,8 @@ export async function getBill(req: AuthRequest, res: Response, next: NextFunctio
     const userId = req.userId!;
     const { id } = req.params;
 
-    const bill = await prisma.bill.findFirst({ where: { id, userId } });
+    const billId = String(id);
+    const bill = await prisma.bill.findFirst({ where: { id: billId, userId } });
     if (!bill) throw new AppError('Bill not found', 404);
 
     res.json({ success: true, data: bill });
@@ -144,11 +145,12 @@ export async function deleteBill(req: AuthRequest, res: Response, next: NextFunc
   try {
     const userId = req.userId!;
     const { id } = req.params;
+    const billId = String(id);
 
-    const bill = await prisma.bill.findFirst({ where: { id, userId } });
+    const bill = await prisma.bill.findFirst({ where: { id: billId, userId } });
     if (!bill) throw new AppError('Bill not found', 404);
 
-    await prisma.bill.delete({ where: { id } });
+    await prisma.bill.delete({ where: { id: billId } });
     await cacheDel(CacheKeys.userDashboard(userId));
 
     res.json({ success: true, message: 'Bill deleted' });
