@@ -125,21 +125,30 @@ export async function getLatestBenefits(req: AuthRequest, res: Response, next: N
   }
 }
 
-// GET /api/v1/benefits/history
+// GET /api/v1/benefits/history?page=1&limit=10
 export async function getBenefitsHistory(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const userId = req.userId!;
+    const page = Number(req.query.page) || 1;
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    const skip = (page - 1) * limit;
 
-    const history = await prisma.benefitsCheck.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 10,
-      select: {
-        id: true, totalPotentialValue: true, aiSummary: true, createdAt: true,
-      },
+    const [history, total] = await Promise.all([
+      prisma.benefitsCheck.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        select: { id: true, totalPotentialValue: true, aiSummary: true, createdAt: true },
+      }),
+      prisma.benefitsCheck.count({ where: { userId } }),
+    ]);
+
+    res.json({
+      success: true,
+      data: history,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
-
-    res.json({ success: true, data: history });
   } catch (error) {
     next(error);
   }
