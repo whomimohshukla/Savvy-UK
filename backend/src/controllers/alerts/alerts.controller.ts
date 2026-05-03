@@ -48,11 +48,12 @@ export async function markRead(req: AuthRequest, res: Response, next: NextFuncti
     const userId = req.userId!;
     const { id } = req.params;
 
-    const alert = await prisma.alert.findFirst({ where: { id, userId } });
+    const alertId = String(id);
+    const alert = await prisma.alert.findFirst({ where: { id: alertId, userId } });
     if (!alert) throw new AppError('Alert not found', 404);
 
     await prisma.alert.update({
-      where: { id },
+      where: { id: alertId },
       data: { status: 'READ', readAt: new Date() },
     });
 
@@ -87,7 +88,7 @@ export async function dismissAlert(req: AuthRequest, res: Response, next: NextFu
     const { id } = req.params;
 
     await prisma.alert.updateMany({
-      where: { id, userId },
+      where: { id: String(id), userId },
       data: { status: 'DISMISSED' },
     });
 
