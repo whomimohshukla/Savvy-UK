@@ -344,6 +344,78 @@ export async function sendPasswordChangedEmail(to: string, name: string): Promis
   ));
 }
 
+// ─── Weekly digest email ──────────────────────────────────────────────────────
+
+export async function sendDigestEmail(
+  to: string,
+  name: string,
+  data: {
+    alertCount: number;
+    totalValue: number;
+    alerts: Array<{ title: string; type: string; valueAmount: number | null }>;
+  }
+): Promise<void> {
+  const firstName = name?.split(' ')[0] || 'there';
+  const { alertCount, totalValue, alerts } = data;
+  const dashboardUrl = env.FRONTEND_URL + '/dashboard/alerts';
+
+  const alertRows = alerts
+    .map(
+      (a) => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid #f0fdf4;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td style="font-size:13px;color:#374151;line-height:1.4;">${a.title}</td>
+            ${
+              a.valueAmount
+                ? `<td align="right" style="font-size:13px;font-weight:700;color:#065f46;white-space:nowrap;padding-left:12px;">+£${Math.round(a.valueAmount)}/yr</td>`
+                : ''
+            }
+          </tr>
+        </table>
+      </td>
+    </tr>`
+    )
+    .join('');
+
+  const body = `
+    <h1 style="margin:0 0 8px;font-size:26px;font-weight:900;color:#064e3b;letter-spacing:-0.5px;">
+      Your weekly savings digest
+    </h1>
+    <p style="margin:0 0 24px;font-size:15px;color:#6b7280;line-height:1.6;">
+      Hi ${firstName}, you have
+      <strong style="color:#065f46;">${alertCount} unread alert${alertCount !== 1 ? 's' : ''}</strong>
+      this week with
+      <strong style="color:#065f46;">£${Math.round(totalValue)}/year</strong>
+      in potential savings waiting for you.
+    </p>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:4px 20px 0;margin:0 0 28px;">
+      <tbody>
+        ${alertRows}
+      </tbody>
+    </table>
+
+    ${btn(dashboardUrl, 'View all alerts →')}
+
+    <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.6;">
+      Manage your notification preferences in your
+      <a href="${env.FRONTEND_URL}/dashboard/settings" style="color:#10b981;text-decoration:none;">account settings</a>.
+    </p>
+  `;
+
+  await send(
+    to,
+    `Your ClaimWise UK weekly digest — ${alertCount} new alert${alertCount !== 1 ? 's' : ''} (£${Math.round(totalValue)} found)`,
+    base(
+      `Hi ${firstName}, you have ${alertCount} new savings alerts this week worth £${Math.round(totalValue)}/year.`,
+      body
+    )
+  );
+}
+
 // ─── Account deleted email ────────────────────────────────────────────────────
 
 export async function sendAccountDeletedEmail(to: string, name: string): Promise<void> {

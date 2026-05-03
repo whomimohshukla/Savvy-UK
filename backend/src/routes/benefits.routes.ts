@@ -1,14 +1,19 @@
 import { Router } from 'express';
 import { checkBenefits, getLatestBenefits, getBenefitsHistory } from '../controllers/benefits/benefits.controller';
 import { authenticate } from '../middleware/authenticate';
-import { rateLimit } from 'express-rate-limit';
+import { validate } from '../middleware/validate';
+import { benefitsCheckSchema } from '../validators/benefits.validators';
+import { paginationSchema } from '../validators/bills.validators';
+import { createUserAiRateLimiter } from '../middleware/aiRateLimit';
+import { env } from '../config/env';
 
-const aiLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 20, message: { success: false, error: 'AI rate limit reached. Try again in an hour.' } });
+const userAiLimiter = createUserAiRateLimiter(env.AI_RATE_LIMIT_MAX);
+
 const router = Router();
-
 router.use(authenticate);
-router.post('/check', aiLimiter, checkBenefits);
-router.get('/latest', getLatestBenefits);
-router.get('/history', getBenefitsHistory);
+
+router.post('/check',   userAiLimiter, validate(benefitsCheckSchema), checkBenefits);
+router.get('/latest',  getLatestBenefits);
+router.get('/history', validate(paginationSchema, 'query'), getBenefitsHistory);
 
 export default router;
