@@ -379,19 +379,21 @@ export default function SettingsPage() {
             <div className="grid gap-3 animate-pulse">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="rounded-xl border border-emerald-100 p-4 space-y-3">
-                  <div className="flex justify-between">
-                    <Skeleton className="h-4 w-16" />
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-7 w-20" />
+                    </div>
                     <Skeleton className="h-8 w-20 rounded-xl" />
                   </div>
-                  <Skeleton className="h-7 w-20" />
                   <div className="space-y-1.5">
-                    {[...Array(3)].map((_, j) => <Skeleton key={j} className="h-3 w-40" />)}
+                    {[...Array(3)].map((_, j) => <Skeleton key={j} className="h-3 w-44" />)}
                   </div>
                 </div>
               ))}
             </div>
-          ) : null}
-          <div className={`grid gap-3 ${subLoading ? 'opacity-0 pointer-events-none absolute' : ''}`}>
+          ) : (
+          <div className="grid gap-3">
             {PLANS.map((plan) => {
               const isActive = currentPlan === plan.id;
               return (
