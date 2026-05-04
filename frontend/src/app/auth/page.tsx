@@ -175,13 +175,6 @@ export default function LoginPage() {
             </Link>
           </p>
 
-          <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-center">
-            <p className="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">Try the demo</p>
-            <div className="space-y-1">
-              <p className="text-xs text-green-700">Email: <code className="font-semibold">demo@claimwise.co.uk</code></p>
-              <p className="text-xs text-green-700">Password: <code className="font-semibold">Password123!</code></p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
