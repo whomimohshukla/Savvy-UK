@@ -125,9 +125,9 @@ export default function EnergyPage() {
               </div>
             </div>
 
-            <Button type="submit" loading={loading} fullWidth size="lg">
-              {!loading && <Zap className="h-4 w-4" />}
-              {loading ? 'Finding best deals…' : 'Compare energy deals'}
+            <Button type="submit" fullWidth size="lg">
+              <Zap className="h-4 w-4" />
+              Compare energy deals
             </Button>
           </form>
         </CardBody>
