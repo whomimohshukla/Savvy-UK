@@ -493,44 +493,97 @@ pm2 logs            # View live logs
 curl http://localhost:5000/health   # Should return OK
 ```
 
-#### Step 8 — Update Vercel with your EC2 URL
-In Vercel → Project → Settings → Environment Variables:
-```
-NEXT_PUBLIC_API_URL=http://YOUR_EC2_PUBLIC_IP:5000
-```
-Redeploy on Vercel (push a commit or click Redeploy).
+#### Step 8 — Assign a free static IP (Elastic IP)
 
-#### Step 9 — (Optional but recommended) Free HTTPS with Nginx + Let's Encrypt
-Only do this if you have a domain. Skip if using IP directly.
+EC2 public IPs change every time the instance restarts. Fix this now before setting up HTTPS.
+
+1. AWS Console → **EC2** → **Elastic IPs** → **Allocate Elastic IP address** → Allocate
+2. Select the new IP → **Actions** → **Associate Elastic IP address**
+3. Choose your instance → Associate
+4. Your EC2 now has a permanent IP that never changes
+
+> Elastic IP is free as long as it is associated with a **running** instance.
+
+---
+
+#### Step 9 — HTTPS with Nginx + Let's Encrypt
+
+> **Why HTTPS is required:** Your frontend is on Vercel (HTTPS). Browsers block any `http://` API call from an `https://` page (mixed content). You MUST have HTTPS on the backend.
+
+**You have two options:**
+
+---
+
+##### Option A — No domain: Free subdomain via DuckDNS (recommended)
+
+DuckDNS gives you a free `yourname.duckdns.org` subdomain. Let's Encrypt accepts it for TLS certs.
+
+**Step A1 — Get your free subdomain**
+1. Go to **duckdns.org** → sign in with Google
+2. Under "domains" → type a name (e.g. `savvy-api`) → click **add domain**
+3. You now have `savvy-api.duckdns.org`
+4. In the **current ip** box → paste your **Elastic IP** → click **update ip**
+
+**Step A2 — Install Nginx + Certbot on EC2**
 ```bash
 sudo apt install -y nginx certbot python3-certbot-nginx
+```
 
-# Create nginx config
+**Step A3 — Create Nginx config**
+```bash
 sudo nano /etc/nginx/sites-available/claimwise
 ```
-Paste:
+Paste (replace `savvy-api.duckdns.org` with your actual subdomain):
 ```nginx
 server {
-    server_name api.claimwise.co.uk;
+    listen 80;
+    server_name claimwise.duckdns.org;
+
     location / {
-        proxy_pass http://localhost:5000;
+        proxy_pass         http://localhost:5000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
     }
 }
 ```
 ```bash
 sudo ln -s /etc/nginx/sites-available/claimwise /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl restart nginx
-
-# Free SSL cert
-sudo certbot --nginx -d api.claimwise.co.uk
-# Answer prompts — cert auto-renews every 90 days
 ```
+
+**Step A4 — Get free TLS cert**
+```bash
+sudo certbot --nginx -d savvy-api.duckdns.org
+# Enter your email when prompted
+# Choose option 2 (Redirect HTTP → HTTPS)
+# Done — cert is valid for 90 days and auto-renews
+```
+
+**Step A5 — Verify**
+```bash
+curl https://claimwise.duckdns.org/health
+# Expected: {"status":"ok","database":"ok","redis":"ok",...}
+```
+
+**Step A6 — Update Vercel**
+
+In Vercel → Project → Settings → Environment Variables:
+```
+NEXT_PUBLIC_API_URL=https://savvy-api.duckdns.org
+```
+Redeploy on Vercel.
+
+---
+
+##### Option B — You have a real domain (e.g. api.claimwise.co.uk)
+
+1. Point an A record at your Elastic IP in your DNS provider
+2. Run the same steps as Option A but replace `savvy-api.duckdns.org` with your domain
+3. Update Vercel `NEXT_PUBLIC_API_URL=https://api.claimwise.co.uk`
 
 ---
 
