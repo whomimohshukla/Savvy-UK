@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Zap, ExternalLink, TrendingDown, Info } from 'lucide-react';
+import { Zap, ExternalLink, TrendingDown, Info, Loader2 } from 'lucide-react';
 import { energyApi } from '@/lib/api/client';
 import { formatCurrency } from '@/lib/utils/cn';
 import { useAuthStore } from '@/lib/store/auth.store';
@@ -53,6 +53,29 @@ export default function EnergyPage() {
       toast({ variant: 'error', title: 'Could not open switching site', description: 'Try visiting uswitch.com directly to compare deals.' });
     }
   };
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center py-24 gap-6">
+      <div className="relative">
+        <div className="h-20 w-20 rounded-full border-4 border-emerald-100" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Loader2 className="h-9 w-9 animate-spin text-emerald-600" />
+        </div>
+      </div>
+      <div className="text-center">
+        <p className="text-lg font-semibold text-green-900">Scanning energy deals…</p>
+        <p className="text-sm text-green-500 mt-1">Comparing tariffs from top UK suppliers</p>
+      </div>
+      <div className="flex flex-col items-center gap-2 w-full max-w-xs">
+        {['Checking current price cap rates…', 'Finding fixed deals for your area…', 'Calculating your potential savings…'].map((msg, i) => (
+          <div key={i} className="flex items-center gap-2 text-xs text-green-500">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} />
+            {msg}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
