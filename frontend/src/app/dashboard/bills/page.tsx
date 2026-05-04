@@ -71,6 +71,8 @@ export default function BillsPage() {
     }
   };
 
+  if (loading) return <BillsSkeleton />;
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
@@ -136,7 +138,7 @@ export default function BillsPage() {
       </Card>
 
       {/* Bills list */}
-      {loading ? <LoadingPage /> : (
+      {(
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-base font-semibold text-green-950">Your bills ({bills.length})</h3>
