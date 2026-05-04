@@ -105,21 +105,21 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-7">
             <h1 className="text-3xl font-black text-green-950 tracking-tight">Create your account</h1>
-            <p className="mt-2 text-green-600">Free forever — start finding savings today</p>
+            <p className="mt-1.5 text-green-600 text-sm">Free forever — start finding savings today</p>
           </div>
 
-          <div className="mb-5">
-            <GoogleSignInButton onError={(msg) => toast({ variant: 'error', title: 'Sign up failed', description: msg })} redirectTo="/onboarding" />
-          </div>
+          {/* Google button */}
+          <GoogleSignInButton onError={(msg) => toast({ variant: 'error', title: 'Sign up failed', description: msg })} redirectTo="/onboarding" />
 
-          <div className="relative mb-5">
+          {/* Divider */}
+          <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-emerald-100" />
+              <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white px-4 text-xs font-medium text-green-500">or register with email</span>
+              <span className="bg-white px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">or</span>
             </div>
           </div>
 
