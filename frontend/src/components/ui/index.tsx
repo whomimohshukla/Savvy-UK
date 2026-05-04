@@ -155,6 +155,150 @@ export function DashboardSkeleton() {
   );
 }
 
+// ── Bills skeleton ────────────────────────────────────────────────────────────
+export function BillsSkeleton() {
+  return (
+    <div className="mx-auto max-w-3xl space-y-6 animate-pulse">
+      <div className="space-y-1.5">
+        <Skeleton className="h-7 w-28" />
+        <Skeleton className="h-4 w-64" />
+      </div>
+      <div className="rounded-2xl border border-emerald-100 bg-white overflow-hidden">
+        <div className="px-6 py-4 border-b border-emerald-50 space-y-1">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-3 w-44" />
+        </div>
+        <div className="px-6 py-5 space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-9 w-20 rounded-xl" />)}
+          </div>
+          <Skeleton className="h-32 w-full rounded-2xl" />
+        </div>
+      </div>
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-32" />
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="rounded-2xl border border-emerald-100 bg-white p-5">
+            <div className="flex items-start gap-4">
+              <Skeleton className="h-10 w-10 rounded-xl flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="flex gap-2">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                  <Skeleton className="h-5 w-24" />
+                </div>
+                <div className="flex gap-3">
+                  <Skeleton className="h-3.5 w-20" />
+                  <Skeleton className="h-3.5 w-28" />
+                </div>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Skeleton className="h-7 w-24 rounded-lg" />
+                <Skeleton className="h-7 w-7 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Alerts skeleton ───────────────────────────────────────────────────────────
+export function AlertsSkeleton() {
+  return (
+    <div className="mx-auto max-w-2xl space-y-5 animate-pulse">
+      <div className="flex items-start justify-between">
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-28" />
+          <Skeleton className="h-4 w-52" />
+        </div>
+      </div>
+      <Skeleton className="h-10 w-full rounded-xl" />
+      <div className="space-y-2.5">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rounded-2xl border border-emerald-100 bg-white p-5">
+            <div className="flex items-start gap-4">
+              <Skeleton className="h-10 w-10 rounded-xl flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="flex gap-2">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                  <Skeleton className="h-5 w-12" />
+                </div>
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3.5 w-full" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Savings skeleton ──────────────────────────────────────────────────────────
+export function SavingsSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="space-y-1.5">
+        <Skeleton className="h-7 w-36" />
+        <Skeleton className="h-4 w-52" />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="rounded-2xl border border-emerald-100 bg-white p-5 space-y-2">
+            <Skeleton className="h-3.5 w-24" />
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-3 w-28" />
+          </div>
+        ))}
+      </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-emerald-100 bg-white p-6 space-y-4">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-40 w-full rounded-xl" />
+          <div className="flex gap-4">
+            {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-3.5 w-20" />)}
+          </div>
+        </div>
+        <div className="rounded-2xl border border-emerald-100 bg-white p-6 space-y-4">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-3 w-full rounded-full" />
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="space-y-1.5">
+              <div className="flex justify-between">
+                <Skeleton className="h-3.5 w-20" />
+                <Skeleton className="h-3.5 w-16" />
+              </div>
+              <Skeleton className="h-1.5 w-full rounded-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="rounded-2xl border border-emerald-100 bg-white overflow-hidden">
+        <div className="px-6 py-4 border-b border-emerald-50">
+          <Skeleton className="h-4 w-28" />
+        </div>
+        <div className="divide-y divide-emerald-50">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex items-center gap-4 px-6 py-4">
+              <Skeleton className="h-9 w-9 rounded-xl flex-shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-3.5 w-48" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-8 w-24 rounded-xl" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Empty state ───────────────────────────────────────────────────────────────
 export function EmptyState({ icon, title, description, action }: {
   icon: React.ReactNode; title: string; description?: string; action?: React.ReactNode;
