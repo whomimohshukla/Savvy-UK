@@ -10,7 +10,7 @@ import {
 import { useAuthStore } from '@/lib/store/auth.store';
 import { subscriptionApi, authApi } from '@/lib/api/client';
 import { useApi } from '@/lib/hooks/useApi';
-import { Card, CardHeader, CardBody, Badge } from '@/components/ui/index';
+import { Card, CardHeader, CardBody, Badge, Skeleton } from '@/components/ui/index';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/lib/store/toast.store';
 
