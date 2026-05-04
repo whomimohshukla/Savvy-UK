@@ -6,7 +6,7 @@ import { useApi } from '@/lib/hooks/useApi';
 import { alertsApi } from '@/lib/api/client';
 import { formatDate, formatCurrency, cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
-import { Badge, Card, EmptyState, LoadingPage } from '@/components/ui/index';
+import { Badge, Card, EmptyState, AlertsSkeleton } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 type AlertType = 'BENEFIT_FOUND' | 'ENERGY_SAVING' | 'BROADBAND_SAVING' | 'PRICE_CAP_CHANGE' | 'MONTHLY_SCAN' | 'BENEFIT_DEADLINE';
@@ -100,7 +100,7 @@ export default function AlertsPage() {
 
       {/* Content */}
       {loading ? (
-        <LoadingPage />
+        <AlertsSkeleton />
       ) : alerts.length === 0 ? (
         <Card>
           <EmptyState
