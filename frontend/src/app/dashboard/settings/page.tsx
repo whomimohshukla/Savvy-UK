@@ -449,7 +449,8 @@ export default function SettingsPage() {
               );
             })}
           </div>
-          {sub?.subscription && currentPlan !== 'FREE' && (
+          )}
+          {!subLoading && sub?.subscription && currentPlan !== 'FREE' && (
             <div className="mt-2 rounded-xl bg-emerald-50/30 border border-emerald-100 p-4 space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-green-600">Status</span>
