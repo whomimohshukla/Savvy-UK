@@ -1,11 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, PoundSterling, FileText, Zap,
   Bell, Settings, LogOut, TrendingUp, ChevronRight,
-  Sparkles, X,
+  Sparkles, X, AlertTriangle, Loader2,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { authApi } from '@/lib/api/client';
@@ -34,11 +35,14 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
   const pathname = usePathname();
   const router   = useRouter();
   const { user, clearAuth, refreshToken } = useAuthStore();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
 
   const handleLogout = async () => {
+    setLoggingOut(true);
     try { if (refreshToken) await authApi.logout(refreshToken); } catch {}
     clearAuth();
     toast({ variant: 'success', title: 'Signed out', description: 'You have been signed out successfully.' });
@@ -178,13 +182,50 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
       {/* ── Logout ── */}
       <div className="border-t border-emerald-100 px-3 py-4">
         <button
-          onClick={handleLogout}
+          onClick={() => setShowLogoutModal(true)}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-green-600 transition-all hover:bg-red-50 hover:text-red-600 group"
         >
           <LogOut className="h-4 w-4 group-hover:text-red-500 transition-colors" />
           Sign out
         </button>
       </div>
+
+      {/* ── Sign-out confirmation modal ── */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-sm rounded-2xl bg-white border border-gray-100 shadow-2xl p-6 animate-scale-in">
+            {/* Icon + heading */}
+            <div className="flex flex-col items-center text-center gap-3 mb-5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50">
+                <AlertTriangle className="h-6 w-6 text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-green-950">Sign out?</h3>
+                <p className="text-sm text-green-500 mt-1">You'll need to sign in again to access your dashboard.</p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                disabled={loggingOut}
+                className="flex-1 rounded-xl border-2 border-emerald-200 bg-white px-4 py-2.5 text-sm font-semibold text-green-700 hover:bg-emerald-50 hover:border-emerald-300 transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loggingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                {loggingOut ? 'Signing out…' : 'Sign out'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
