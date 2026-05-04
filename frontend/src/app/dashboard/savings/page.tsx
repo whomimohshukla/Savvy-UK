@@ -5,7 +5,7 @@ import { TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useApi } from '@/lib/hooks/useApi';
 import { dashboardApi } from '@/lib/api/client';
 import { formatCurrency, formatDate, cn } from '@/lib/utils/cn';
-import { Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage } from '@/components/ui/index';
+import { Badge, Card, CardHeader, CardBody, EmptyState, SavingsSkeleton } from '@/components/ui/index';
 import { Button } from '@/components/ui/Button';
 import { SavingsChart } from '@/components/dashboard/SavingsChart';
 import { toast } from '@/lib/store/toast.store';
@@ -40,7 +40,7 @@ export default function SavingsPage() {
     }
   };
 
-  if (loading) return <LoadingPage />;
+  if (loading) return <SavingsSkeleton />;
 
   return (
     <div className="space-y-6">
