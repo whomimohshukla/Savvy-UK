@@ -6,7 +6,7 @@ import { billsApi } from '@/lib/api/client';
 import { useApi } from '@/lib/hooks/useApi';
 import { formatCurrency, formatDate, cn } from '@/lib/utils/cn';
 import { Button } from '@/components/ui/Button';
-import { Badge, Card, CardHeader, CardBody, EmptyState, LoadingPage } from '@/components/ui/index';
+import { Badge, Card, CardHeader, CardBody, EmptyState, BillsSkeleton } from '@/components/ui/index';
 import { toast } from '@/lib/store/toast.store';
 
 const BILL_TYPES = [
