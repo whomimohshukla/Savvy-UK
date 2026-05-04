@@ -303,7 +303,7 @@ export default function SettingsPage() {
   const [showPasswordModal, setShowPasswordModal]   = useState(false);
   const [showProfileModal, setShowProfileModal]     = useState(false);
   const [showDeleteModal, setShowDeleteModal]       = useState(false);
-  const { data } = useApi(() => subscriptionApi.getCurrent() as any);
+  const { data, loading: subLoading } = useApi(() => subscriptionApi.getCurrent() as any);
   const sub = (data as any)?.data;
   const currentPlan = user?.plan || 'FREE';
 
